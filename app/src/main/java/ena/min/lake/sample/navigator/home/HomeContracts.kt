@@ -1,4 +1,4 @@
-package ena.min.lake.sample.home
+package ena.min.lake.sample.navigator.home
 
 import ena.min.lake.ModelContract
 import ena.min.lake.ViewContract

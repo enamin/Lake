@@ -13,7 +13,7 @@ import java.util.*
  */
 
 
-open class InfixLake<M : ModelContract, V : ViewContract> : Lake<M, V>(), LakeInfix {
+open class EasyLake<M : ModelContract, V : ViewContract> : Lake<M, V>(), DisposableCan, AllInfixes {
     override val disposables = ArrayList<Disposable?>()
 
     override fun flush() {
@@ -34,10 +34,10 @@ interface DisposableCan {
 
 }
 
-interface LakeInfix : DisposableCan, OceanInfix {
+interface AllInfixes : OceanInfix {
 
     infix fun Disposable?.can(that: DisposableCan) {
-        can(this)
+        that.can(this)
     }
 
 }

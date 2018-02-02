@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_background"
+    android:padding="16dp"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#dddddd"
+            android:shadowColor="#000000"
+            android:shadowDy="1"
+            android:shadowDx="1"
+            android:shadowRadius="5"
+            android:textSize="16dp"
+            android:gravity="center"
+            android:text="This is a simple activity which manages itself via a Lake."
+            />
+
+        <TextView
+            android:id="@+id/tvSimpleTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#dddddd"
+            android:shadowColor="#000000"
+            android:shadowDy="1"
+            android:shadowDx="1"
+            android:layout_marginTop="36dp"
+            android:shadowRadius="5"
+            android:textSize="30dp"
+            android:gravity="center"
+            android:text=""
+            />
+
+    </LinearLayout>
+
+
+</RelativeLayout>

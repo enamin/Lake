@@ -1,8 +1,7 @@
 package ena.min.android.lake.specifics.navigator
 
 import android.util.Log
-import android.view.ViewGroup
-import ena.min.lake.InfixLake
+import ena.min.lake.EasyLake
 import ena.min.lake.NO_MODEL
 import ena.min.lake.Ocean
 import ena.min.lake.OceanOwner
@@ -13,15 +12,14 @@ import java.util.*
  * Created by aminenami on 2/1/18.
  */
 
-class NavigatorLake : InfixLake<NO_MODEL, NavigatorViewContract>(), OceanOwner {
+class NavigatorLake : EasyLake<NO_MODEL, NavigatorViewContract>(), OceanOwner {
     override val ocean = Ocean()
-    private val lakeStack = Stack<InfixLake<*, *>>()
+    private val lakeStack = Stack<EasyLake<*, *>>()
 
     object Streams {
         val back = "back"
         val push = "push"
         val pop = "pop"
-        val activeWindow = "activeWindow"
         val stackChanged = "stackChanged"
     }
 
@@ -36,8 +34,8 @@ class NavigatorLake : InfixLake<NO_MODEL, NavigatorViewContract>(), OceanOwner {
         } can this
 
         (Streams.push from this).perform {
-            val lake = (it as? InfixLake<*, *>) ?: return@perform
-            val vc = it.view?: return@perform
+            val lake = (it as? EasyLake<*, *>) ?: return@perform
+            val vc = it.view ?: return@perform
 
             if (view?.navigationShowView(vc) == true) {
                 lakeStack.push(lake)
@@ -60,7 +58,7 @@ class NavigatorLake : InfixLake<NO_MODEL, NavigatorViewContract>(), OceanOwner {
         }
     }
 
-    fun watchTopOnBackFor(target: InfixLake<*, *>): Observable<Any?>? {
+    fun watchTopOnBackFor(target: EasyLake<*, *>): Observable<Any?>? {
         return watchTopOnBack()?.filter { it === target }
     }
 

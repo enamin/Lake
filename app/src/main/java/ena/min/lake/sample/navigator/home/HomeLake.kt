@@ -1,19 +1,19 @@
-package ena.min.lake.sample.home
+package ena.min.lake.sample.navigator.home
 
 import ena.min.android.lake.specifics.navigator.NavigatorLake
-import ena.min.lake.InfixLake
+import ena.min.lake.EasyLake
 import ena.min.lake.NO_MODEL
 import ena.min.lake.appUiThread
 import ena.min.lake.sample.appOcean
-import ena.min.lake.sample.navigatorLake
-import ena.min.lake.sample.profile.ProfileLake
-import ena.min.lake.sample.profile.ProfileView
+import ena.min.lake.sample.navigator.navigatorLake
+import ena.min.lake.sample.navigator.profile.ProfileLake
+import ena.min.lake.sample.navigator.profile.ProfileView
 
 /**
  * Created by aminenami on 1/28/18.
  */
 
-class HomeLake : InfixLake<HomeModelContract, HomeViewContract>() {
+class HomeLake : EasyLake<HomeModelContract, HomeViewContract>() {
     private var aLocalState = 0
     private var isBusy_anotherLocalState = false
         set(value) {

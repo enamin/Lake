@@ -1,4 +1,4 @@
-package ena.min.lake.sample.profile
+package ena.min.lake.sample.navigator.profile
 
 import android.content.Context
 import android.view.View

@@ -1,4 +1,4 @@
-package ena.min.lake.sample.profile
+package ena.min.lake.sample.navigator.profile
 
 import ena.min.lake.ViewContract
 import io.reactivex.Observable

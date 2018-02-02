@@ -19,3 +19,7 @@ class App : Application() {
         appOcean = Ocean()
     }
 }
+
+object Streams {
+    val PERSON_SELECTED = "PERSON_SELECTED"
+}

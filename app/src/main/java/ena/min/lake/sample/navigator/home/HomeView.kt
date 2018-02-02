@@ -1,4 +1,4 @@
-package ena.min.lake.sample.home
+package ena.min.lake.sample.navigator.home
 
 import android.content.Context
 import android.view.View

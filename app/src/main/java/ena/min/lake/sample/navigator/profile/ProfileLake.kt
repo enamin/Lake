@@ -1,16 +1,16 @@
-package ena.min.lake.sample.profile
+package ena.min.lake.sample.navigator.profile
 
 import ena.min.android.lake.specifics.navigator.NavigatorLake
-import ena.min.lake.InfixLake
+import ena.min.lake.EasyLake
 import ena.min.lake.NO_MODEL
 import ena.min.lake.sample.appOcean
-import ena.min.lake.sample.navigatorLake
+import ena.min.lake.sample.navigator.navigatorLake
 
 /**
  * Created by aminenami on 1/29/18.
  */
 
-class ProfileLake : InfixLake<NO_MODEL, ProfileViewContract>() {
+class ProfileLake : EasyLake<NO_MODEL, ProfileViewContract>() {
 
     override fun connect(model: NO_MODEL?, view: ProfileViewContract?): ProfileLake {
         super.connect(model, view)
