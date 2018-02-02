@@ -2,9 +2,12 @@ package ena.min.lake.sample
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.example.aminenami.jenkinstest.R
-import ena.min.android.lake.specifics.NavigatorLake
+import ena.min.android.lake.specifics.navigator.NavigatorLake
+import ena.min.android.lake.specifics.navigator.NavigatorViewContract
 import ena.min.lake.OceanInfix
+import ena.min.lake.ViewContract
 import ena.min.lake.sample.home.HomeLake
 import ena.min.lake.sample.home.HomeModel
 import ena.min.lake.sample.home.HomeView
@@ -15,15 +18,26 @@ import kotlin.properties.Delegates
 var navigatorLake by Delegates.notNull<NavigatorLake>()
     private set
 
-class MainActivity : AppCompatActivity(), OceanInfix {
+class MainActivity : AppCompatActivity(), NavigatorViewContract, OceanInfix {
+    override fun navigationShowView(view: ViewContract?): Boolean {
+        if (isFinishing) {
+            return false
+        }
+
+        view?: return false
+
+        val v = view.createView(this)?: return false
+
+        flRoot.addView(v)
+        return true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        navigatorLake = NavigatorLake()
 
-        //Create a viewless Lake to act as your App navigator
-        flRoot sendTo navigatorLake via NavigatorLake.Streams.activeWindow
+        //initialize navigator lake:
+        navigatorLake = NavigatorLake().connect(view = this)
 
         //Create your first view
         val home = HomeLake().connect(HomeModel(), HomeView())

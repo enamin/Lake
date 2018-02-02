@@ -1,11 +1,7 @@
 package ena.min.lake.sample
 
 import android.app.Application
-import android.os.Handler
-import android.os.Looper
-import ena.min.android.lake.specifics.NavigatorLake
 import ena.min.lake.Ocean
-import io.reactivex.schedulers.Schedulers
 import kotlin.properties.Delegates
 
 /**

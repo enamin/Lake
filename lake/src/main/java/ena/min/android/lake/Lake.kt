@@ -13,9 +13,9 @@ import io.reactivex.subjects.PublishSubject
 
 
 open class Lake<M : ModelContract, V : ViewContract> {
-    lateinit var model: M
+    var model: M? = null
         internal set
-    lateinit var view: V
+    var view: V? = null
         internal set
 
     private val afterFlushed = PublishSubject.create<Unit>()
@@ -23,12 +23,12 @@ open class Lake<M : ModelContract, V : ViewContract> {
     fun afterFlushed(): Observable<Unit> = afterFlushed
 
     open fun flush() {
-        view.destroyView()
+        view?.destroyView()
         afterFlushed.onNext(Unit)
         afterFlushed.onComplete()
     }
 
-    open fun connect(model: M, view: V): Lake<M, V> = also {
+    open fun connect(model: M? = null, view: V? = null): Lake<M, V> = also {
         this.model = model
         this.view = view
     }
@@ -37,8 +37,9 @@ open class Lake<M : ModelContract, V : ViewContract> {
 
 open class LakeView(val viewResId: Int) : ViewContract {
     var view: View? = null
+        private set
 
-    override fun detachAndReturnView(): View? {
+    private fun detachView(): View? {
         (view?.parent as? ViewGroup)?.removeView(view)
         return view
     }
@@ -49,7 +50,7 @@ open class LakeView(val viewResId: Int) : ViewContract {
     }
 
     override fun destroyView() {
-        detachAndReturnView()
+        detachView()
         view = null
     }
 }
@@ -60,7 +61,6 @@ class NO_VIEW : ViewContract
 open class LakeModel : ModelContract
 
 interface ViewContract {
-    fun detachAndReturnView(): View? = null
     fun createView(context: Context): View? = null
     fun destroyView() = Unit
 }

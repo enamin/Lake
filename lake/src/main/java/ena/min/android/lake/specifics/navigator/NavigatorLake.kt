@@ -1,17 +1,19 @@
-package ena.min.android.lake.specifics
+package ena.min.android.lake.specifics.navigator
 
 import android.util.Log
 import android.view.ViewGroup
-import ena.min.lake.*
+import ena.min.lake.InfixLake
+import ena.min.lake.NO_MODEL
+import ena.min.lake.Ocean
+import ena.min.lake.OceanOwner
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.withLatestFrom
 import java.util.*
 
 /**
  * Created by aminenami on 2/1/18.
  */
 
-class NavigatorLake : InfixLake<NO_MODEL, NO_VIEW>(), OceanOwner {
+class NavigatorLake : InfixLake<NO_MODEL, NavigatorViewContract>(), OceanOwner {
     override val ocean = Ocean()
     private val lakeStack = Stack<InfixLake<*, *>>()
 
@@ -23,18 +25,8 @@ class NavigatorLake : InfixLake<NO_MODEL, NO_VIEW>(), OceanOwner {
         val stackChanged = "stackChanged"
     }
 
-    init {
-        connect(NO_MODEL(), NO_VIEW())
-    }
-
-    override fun connect(model: NO_MODEL, view: NO_VIEW): NavigatorLake {
+    override fun connect(model: NO_MODEL?, view: NavigatorViewContract?): NavigatorLake {
         super.connect(model, view)
-
-
-//        (Streams.activeWindow from this).filter { it !== activeWindow } perform {
-//            this.activeWindow?.removeAllViews()
-//            this.activeWindow = it as? ViewGroup
-//        } can this
 
         (Streams.pop from this) perform {
             try {
@@ -43,15 +35,15 @@ class NavigatorLake : InfixLake<NO_MODEL, NO_VIEW>(), OceanOwner {
             }
         } can this
 
-        (Streams.push from this).withLatestFrom(Streams.activeWindow from this) { p, aw -> p to aw }
-                .filter { it.first is InfixLake<*, *> } perform {
-            val lake = (it?.first as? InfixLake<*, *>) ?: return@perform
-            val ctx = (it.second as? ViewGroup)?.context ?: return@perform
-            val vc = lake.view
-            (it.second as? ViewGroup)?.addView(vc.createView(ctx))
-            lakeStack.push(lake)
-            Log.d("aminenami", "stack: ${lakeStack.size}, $lakeStack")
-            send(Streams.stackChanged, lakeStack)
+        (Streams.push from this).perform {
+            val lake = (it as? InfixLake<*, *>) ?: return@perform
+            val vc = it.view?: return@perform
+
+            if (view?.navigationShowView(vc) == true) {
+                lakeStack.push(lake)
+                Log.d("aminenami", "stack: ${lakeStack.size}, $lakeStack")
+                send(Streams.stackChanged, lakeStack)
+            }
         } can this
 
         return this
