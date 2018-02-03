@@ -1,8 +1,8 @@
 package ena.min.lake.sample.activityresult
 
 import ena.min.lake.NO_MODEL
-import ena.min.lake.Ocean
-import ena.min.lake.OceanInfix
+import ena.min.android.lake.Cloud
+import ena.min.android.lake.CloudInfix
 import ena.min.lake.sample.Streams
 import junit.framework.Assert
 import org.junit.Test
@@ -11,8 +11,8 @@ import org.junit.Test
  * Created by aminenami on 2/3/18.
  */
 
-class TestActivityResult2Lake : OceanInfix {
-    private val appOcean = Ocean()
+class TestActivityResult2Lake : CloudInfix {
+    private val appOcean = Cloud()
     private val lake = ActivityResult2Lake(appOcean)
 
     @Test

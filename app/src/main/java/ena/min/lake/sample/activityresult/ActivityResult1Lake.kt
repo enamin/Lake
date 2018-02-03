@@ -1,30 +1,34 @@
 package ena.min.lake.sample.activityresult
 
-import ena.min.lake.EasyLake
-import ena.min.lake.NO_MODEL
-import ena.min.lake.Ocean
-import ena.min.lake.ViewContract
-import ena.min.lake.sample.Streams
-import ena.min.lake.sample.appOcean
-import io.reactivex.Observable
+import ena.min.android.lake.Cloud
+import ena.min.android.lake.EasyLake
+import ena.min.android.lake.Stream
 
 /**
  * Created by aminenami on 2/3/18.
  */
 
-class ActivityResult1Lake(val appOcean: Ocean): EasyLake<NO_MODEL, ActivityResult1ViewContract>() {
-    override fun connect(model: NO_MODEL?, view: ActivityResult1ViewContract?): ActivityResult1Lake {
-        super.connect(model, view)
+class ActivityResult1Lake : EasyLake() {
 
-        (Streams.PERSON_SELECTED from appOcean) perform {
-            (it as? ResultItem).let {
-                it?: return@let
-                view?.updateText("${it.name} : ${it.age}")
-            }
+    companion object {
+        val cloud = Cloud()
+        val STREAM_PERSON_SELECTED = Stream<ResultItem>(cloud, "STREAM_PERSON_SELECTED")
+    }
+
+    val STREAM_BUTTON_CLICKS = Stream<Unit>(cloud, "STREAM_BUTTON_CLICKS")
+    val STREAM_UPDATE_TEXT = Stream<String>(cloud, "STREAM_UPDATE_TEXT")
+    val STREAM_START_AN_ACTIVITY = Stream<Class<*>>(cloud, "STREAM_START_AN_ACTIVITY")
+
+
+    override fun connect(): ActivityResult1Lake {
+        super.connect()
+
+        STREAM_PERSON_SELECTED perform {
+            "${it?.name} : ${it?.age}" sendTo STREAM_UPDATE_TEXT
         } can this
 
-        view?.someButtonClicks perform {
-            view?.startAnActivity(ActivityResultActivity2::class.java)
+        STREAM_BUTTON_CLICKS perform {
+            ActivityResultActivity2::class.java sendTo STREAM_START_AN_ACTIVITY
         } can this
 
         return this
@@ -32,9 +36,3 @@ class ActivityResult1Lake(val appOcean: Ocean): EasyLake<NO_MODEL, ActivityResul
 }
 
 data class ResultItem(val name: String, val age: Int)
-
-interface ActivityResult1ViewContract: ViewContract {
-    val someButtonClicks: Observable<Unit>
-    fun updateText(text: String)
-    fun startAnActivity(clazz: Class<*>)
-}

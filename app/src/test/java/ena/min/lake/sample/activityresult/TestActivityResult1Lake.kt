@@ -1,8 +1,8 @@
 package ena.min.lake.sample.activityresult
 
 import ena.min.lake.NO_MODEL
-import ena.min.lake.Ocean
-import ena.min.lake.OceanInfix
+import ena.min.android.lake.Cloud
+import ena.min.android.lake.CloudInfix
 import ena.min.lake.sample.Streams
 import io.reactivex.subjects.PublishSubject
 import junit.framework.Assert
@@ -12,9 +12,9 @@ import org.junit.Test
  * Created by aminenami on 2/3/18.
  */
 
-class TestActivityResult1Lake : OceanInfix {
-    val appOcean = Ocean()
-    val lake = ActivityResult1Lake(appOcean)
+class TestActivityResult1Lake : CloudInfix {
+    val appCloud = Cloud()
+    val lake = ActivityResult1Lake()
 
     @Test
     fun connection() {
@@ -34,11 +34,11 @@ class TestActivityResult1Lake : OceanInfix {
 
         }
 
-        lake.connect(NO_MODEL(), view)
+        lake.connect(appCloud)
 
         view.someButtonClicks.onNext(Unit)
         val testItem = ResultItem("test", 99)
-        testItem sendTo appOcean via Streams.PERSON_SELECTED
+        testItem sendTo appCloud via Streams.PERSON_SELECTED
     }
 }
 

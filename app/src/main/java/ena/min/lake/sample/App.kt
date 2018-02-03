@@ -1,14 +1,14 @@
 package ena.min.lake.sample
 
 import android.app.Application
-import ena.min.lake.Ocean
+import ena.min.android.lake.Cloud
 import kotlin.properties.Delegates
 
 /**
  * Created by aminenami on 1/28/18.
  */
 
-var appOcean: Ocean by Delegates.notNull()
+var appCloud: Cloud by Delegates.notNull()
     private set
 
 class App : Application() {
@@ -16,7 +16,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        appOcean = Ocean()
+        appCloud = Cloud()
     }
 }
 

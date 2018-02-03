@@ -1,32 +1,41 @@
 package ena.min.lake.sample
 
-import ena.min.lake.EasyLake
-import ena.min.lake.ModelContract
-import ena.min.lake.Ocean
-import ena.min.lake.ViewContract
+import ena.min.android.lake.Cloud
+import ena.min.android.lake.EasyLake
+import ena.min.android.lake.Stream
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
 /**
  * Created by aminenami on 2/3/18.
  */
-class MainLake(val appOcean: Ocean) : EasyLake<MainModelContract, MainViewContract>() {
-    override fun connect(model: MainModelContract?, view: MainViewContract?): MainLake {
-        super.connect(model, view)
+class MainLake(val model: MainModelContract) : EasyLake() {
+    private val cloud = Cloud()
 
-        view?.listClicks?.delay(300, TimeUnit.MILLISECONDS)
-                ?.subscribe { view?.startActivity(it.destClazz) } can this
+    val STREAM_START_ACTIVITY = Stream<Class<*>>(cloud, "STREAM_START_ACTIVITY")
+    val STREAM_LIST_CLICKS = Stream<MainModel.Item>(cloud, "STREAM_LIST_CLICKS")
+    val STREAM_SHOW_LIST = Stream<Iterable<MainModel.Item>>(cloud, "STREAM_SHOW_LIST")
 
-        model?.accessData() perform { view?.showList(it?: emptyList()) }
+
+    override fun connect(): MainLake {
+        super.connect()
+
+        model.accessData() pipeTo STREAM_SHOW_LIST
+
+        STREAM_LIST_CLICKS.open().delay(300, TimeUnit.MILLISECONDS) perform {
+            (it as? MainModel.Item?)?.destClazz sendTo STREAM_START_ACTIVITY
+        } can this
+
         return this
     }
+
 }
 
-interface MainModelContract : ModelContract {
+interface MainModelContract {
     fun accessData(): Observable<Iterable<MainModel.Item>>
 }
 
-interface MainViewContract : ViewContract {
+interface MainViewContract {
     val listClicks: Observable<MainModel.Item>
     fun showList(items: Iterable<MainModel.Item>)
     fun startActivity(clazz: Class<*>)

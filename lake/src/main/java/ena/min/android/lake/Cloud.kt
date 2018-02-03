@@ -1,17 +1,8 @@
-package ena.min.lake
+package ena.min.android.lake
 
-import io.reactivex.Observable
-import io.reactivex.rxkotlin.withLatestFrom
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
 
-        /**
-         * Created by aminenami on 2/1/18.
-         */
-
-typealias Transform2to1 = (Any?, Any?) -> Any?
-
-class Ocean {
+class Cloud {
 
     private val bank = HashMap<String, BehaviorSubject<in Any?>>()
 
@@ -22,12 +13,6 @@ class Ocean {
     fun remove(streamName: String) {
         bank[streamName]?.onComplete()
         bank.remove(streamName)
-    }
-
-    fun getWithLatestFrom(streamNameSource: String, streamTarget: String, transform: Transform2to1): Observable<Any?>? {
-        return get(streamNameSource)
-                .withLatestFrom(get(streamTarget))
-                { s1: Any?, s2: Any? -> transform(s1, s2) }
     }
 
     operator fun get(streamName: String): BehaviorSubject<Any?> {
@@ -50,9 +35,16 @@ class Ocean {
 
 }
 
-interface OceanOwner {
-    val ocean: Ocean
+data class Stream<T: Any?>(val cloud: Cloud, val streamName: String) {
+    fun send(item: T) {
+        cloud.send(streamName, item)
+    }
+    fun open() = cloud[streamName]
+}
+
+interface CloudOwner {
+    val cloud: Cloud
     fun send(streamName: String, item: Any? = Unit) {
-        this.ocean.send(streamName, item)
+        this.cloud.send(streamName, item)
     }
 }

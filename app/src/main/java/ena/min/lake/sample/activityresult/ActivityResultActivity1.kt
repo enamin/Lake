@@ -4,30 +4,34 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.example.aminenami.jenkinstest.R
-import ena.min.lake.sample.appOcean
-import io.reactivex.subjects.PublishSubject
+import ena.min.android.lake.CloudInfix
 import kotlinx.android.synthetic.main.activity_result1.*
 
-class ActivityResultActivity1 : AppCompatActivity(), ActivityResult1ViewContract {
+class ActivityResultActivity1 : AppCompatActivity(), CloudInfix {
 
-    override val someButtonClicks = PublishSubject.create<Unit>()
-    val lake = ActivityResult1Lake(appOcean)
+    val lake = ActivityResult1Lake()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_result1)
 
-        lake.connect(view = this)
+        lake.STREAM_START_AN_ACTIVITY perform { startAnActivity(it) }
+        lake.STREAM_UPDATE_TEXT perform { updateText(it) }
 
-        btnStartNextActivity.setOnClickListener { someButtonClicks.onNext(Unit) }
+        btnStartNextActivity.setOnClickListener {
+            Unit sendTo lake.STREAM_BUTTON_CLICKS
+        }
+
+        lake.connect()
     }
 
-    override fun startAnActivity(clazz: Class<*>) {
+    fun startAnActivity(clazz: Class<*>?) {
+        clazz ?: return
         startActivity(Intent(this, clazz))
     }
 
-    override fun updateText(text: String) {
+    fun updateText(text: String?) {
         tvResult.text = text
     }
 

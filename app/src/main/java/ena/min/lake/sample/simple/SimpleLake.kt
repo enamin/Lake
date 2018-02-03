@@ -1,9 +1,8 @@
 package ena.min.lake.sample.simple
 
-import android.util.Log
-import ena.min.lake.EasyLake
-import ena.min.lake.NO_MODEL
-import ena.min.lake.ViewContract
+import ena.min.android.lake.Cloud
+import ena.min.android.lake.EasyLake
+import ena.min.android.lake.Stream
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -11,19 +10,25 @@ import java.util.concurrent.TimeUnit
  * Created by aminenami on 2/2/18.
  */
 
-class SimpleLake : EasyLake<NO_MODEL, SimpleViewContract>() {
+class SimpleLake : EasyLake() {
+
     private var isConnected = false
+    private val cloud = Cloud()
 
-    override fun connect(model: NO_MODEL?, view: SimpleViewContract?): SimpleLake {
-        super.connect(model, view)
+    init {
+        defineStream(STREAM_FINISH, Stream<Unit>(cloud, STREAM_FINISH))
+        defineStream(STREAM_UPDATE_TIMER_TEXT, Stream<String>(cloud, STREAM_UPDATE_TIMER_TEXT))
+    }
 
-        Log.e("SimpleLake", "view is: $view")
+    override fun connect(): SimpleLake {
+        super.connect()
 
         if (isConnected) {
             return this
         }
 
         isConnected = true
+
         var time = 10
         Observable.interval(1, TimeUnit.SECONDS)
                 .subscribe {
@@ -34,19 +39,19 @@ class SimpleLake : EasyLake<NO_MODEL, SimpleViewContract>() {
     }
 
     private fun onClockTick(time: Int) {
-        view?.updateTimerText("$time")
+        "$time" sendTo get(STREAM_UPDATE_TIMER_TEXT)
+
         if (time == 0) {
             isConnected = false
-            flush()
+            Unit sendTo get(STREAM_FINISH)
         }
     }
 
     companion object {
+        val STREAM_UPDATE_TIMER_TEXT = "STREAM_UPDATE_TIMER_TEXT"
+        val STREAM_FINISH = "STREAM_FINISH"
+
         var instance = SimpleLake()
             private set
     }
-}
-
-interface SimpleViewContract : ViewContract {
-    fun updateTimerText(text: String)
 }

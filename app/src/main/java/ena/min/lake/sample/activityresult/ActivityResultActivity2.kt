@@ -1,41 +1,36 @@
 package ena.min.lake.sample.activityresult
 
 import android.os.Bundle
-import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import com.example.aminenami.jenkinstest.R
-import ena.min.lake.*
-import ena.min.lake.sample.Streams
-import ena.min.lake.sample.appOcean
+import ena.min.android.lake.Cloud
+import ena.min.android.lake.CloudInfix
+import ena.min.android.lake.EasyLake
+import ena.min.android.lake.Stream
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_result2.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class ActivityResultActivity2 : AppCompatActivity(), OceanInfix, ActivityResult2ViewContract {
-
-    override fun setSomeTexts(text: String) {
-        tvNameAndAge.text = text
-    }
+class ActivityResultActivity2 : AppCompatActivity(), CloudInfix {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result2)
 
-        ActivityResult2Lake(appOcean).connect(view = this)
-    }
-
-    override fun destroyView() {
-        super.destroyView()
-        finish()
+        val lake = ActivityResult2Lake()
+        lake.STREAM_SET_BIG_TEXT perform { tvNameAndAge.text = it }
+        lake.STREAM_FINISH perform { finish() }
+        lake.connect()
     }
 }
 
-interface ActivityResult2ViewContract: ViewContract{
-    fun setSomeTexts(text: String)
-}
+class ActivityResult2Lake : EasyLake() {
 
-class ActivityResult2Lake(val appOcean: Ocean): EasyLake<NO_MODEL, ActivityResult2ViewContract>() {
+    private val cloud = Cloud()
+    val STREAM_SET_BIG_TEXT = Stream<String>(cloud, "STREAM_SET_BIG_TEXT")
+    val STREAM_FINISH = Stream<Unit>(cloud, "STREAM_FINISH")
+
     private val resultItems = listOf(
             ResultItem("John", 33),
             ResultItem("David", 18),
@@ -46,22 +41,23 @@ class ActivityResult2Lake(val appOcean: Ocean): EasyLake<NO_MODEL, ActivityResul
             ResultItem("Jack", 27)
     )
 
-    override fun connect(model: NO_MODEL?, view: ActivityResult2ViewContract?): ActivityResult2Lake {
-        super.connect(model, view)
+    override fun connect(): ActivityResult2Lake {
+        super.connect()
 
         val resultItem = resultItems[Random().nextInt(resultItems.size)]
 
-        view?.setSomeTexts("Hi, I'm ${resultItem.name}. I'm ${resultItem.age}")
+        val report = "Hi, I'm ${resultItem.name}. I'm ${resultItem.age}"
+        report sendTo STREAM_SET_BIG_TEXT
 
-        Observable.just(Unit).delay(2, TimeUnit.SECONDS).subscribe {
+        Observable.just(Unit).delay(2, TimeUnit.SECONDS) perform  {
             sendResult(resultItem)
-            flush()
+            Unit sendTo STREAM_FINISH
         }
 
         return this
     }
 
     private fun sendResult(resultItem: ResultItem) {
-        resultItem sendTo appOcean via Streams.PERSON_SELECTED
+        resultItem sendTo ActivityResult1Lake.STREAM_PERSON_SELECTED
     }
 }

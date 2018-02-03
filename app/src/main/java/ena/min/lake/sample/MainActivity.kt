@@ -6,60 +6,59 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.aminenami.jenkinstest.R
-import ena.min.lake.AllInfixes
-import ena.min.lake.LakeModel
-import ena.min.lake.LakeView
-import ena.min.lake.OceanInfix
+import ena.min.android.lake.AllInfixes
+import ena.min.android.lake.CloudInfix
+import ena.min.android.lake.DisposableCan
+import ena.min.android.lake.Stream
 import ena.min.lake.sample.activityresult.ActivityResultActivity1
 import ena.min.lake.sample.simple.SimpleActivity
 import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.row_main_item.view.*
+import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
-class MainActivity : AppCompatActivity(), OceanInfix {
-    private val mainView = MainView()
-    private val mainLake = MainLake(appOcean)
+class MainActivity : AppCompatActivity(), DisposableCan, AllInfixes {
+    override val disposables = ArrayList<Disposable?>()
+    private val mainLake = MainLake(MainModel())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(mainView.createView(this))
-        mainLake.connect(MainModel(), mainView)
+        setContentView(R.layout.activity_main)
+
+        rvMain?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        mainLake.STREAM_START_ACTIVITY perform {
+            startActivity(Intent(this, it))
+        } can this
+
+        mainLake.STREAM_SHOW_LIST perform {
+            val items = it?: emptyList()
+            val adapter = MainAdapter(this, items)
+            rvMain?.adapter = adapter
+            adapter.itemClicks pipeTo mainLake.STREAM_LIST_CLICKS
+        }
+
+        mainLake.connect()
+
     }
 
     override fun onDestroy() {
-        //Unsubscribe the Lake from all streams also destroy its view:
-        mainLake.flush()
+        //Unsubscribe from all streams
+        disposeAll()
         //Just tell everyone that the main activity is destroyed (optional):
-        Unit sendTo appOcean via Streams.MAIN_ACTIVITY_DESTROYED
+        Unit sendTo Stream<Unit>(appCloud, Streams.MAIN_ACTIVITY_DESTROYED)
 
         super.onDestroy()
     }
 }
 
-class MainView : LakeView(R.layout.activity_main), MainViewContract, OceanInfix {
-    override fun startActivity(clazz: Class<*>) {
-        val ctx = view?.context ?: return
-        ctx.startActivity(Intent(ctx, clazz))
-    }
-
-    override val listClicks = PublishSubject.create<MainModel.Item>()
-
-    override fun showList(items: Iterable<MainModel.Item>) {
-        val ctx = view?.context ?: return
-        view?.rvMain?.layoutManager = LinearLayoutManager(ctx, LinearLayoutManager.VERTICAL, false)
-        view?.rvMain?.adapter = MainAdapter(ctx, items).also {
-            it.itemClicks pipe listClicks
-        }
-    }
-}
-
-
-class MainModel : LakeModel(), MainModelContract {
+class MainModel : MainModelContract {
 
     override fun accessData(): Observable<Iterable<Item>> {
         return Observable.just(listOf(
