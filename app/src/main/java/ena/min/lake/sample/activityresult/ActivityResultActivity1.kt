@@ -4,14 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.example.aminenami.jenkinstest.R
-import ena.min.lake.Ocean
+import ena.min.lake.sample.appOcean
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_result1.*
 
 class ActivityResultActivity1 : AppCompatActivity(), ActivityResult1ViewContract {
 
     override val someButtonClicks = PublishSubject.create<Unit>()
-    val lake = ActivityResult1Lake()
+    val lake = ActivityResult1Lake(appOcean)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,7 +23,7 @@ class ActivityResultActivity1 : AppCompatActivity(), ActivityResult1ViewContract
         btnStartNextActivity.setOnClickListener { someButtonClicks.onNext(Unit) }
     }
 
-    override fun startAnActivity(clazz: Class<ActivityResultActivity2>) {
+    override fun startAnActivity(clazz: Class<*>) {
         startActivity(Intent(this, clazz))
     }
 

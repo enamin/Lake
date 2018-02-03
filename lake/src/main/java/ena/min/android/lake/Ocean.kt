@@ -2,6 +2,7 @@ package ena.min.lake
 
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.withLatestFrom
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
         /**
@@ -12,7 +13,7 @@ typealias Transform2to1 = (Any?, Any?) -> Any?
 
 class Ocean {
 
-    private val bank = HashMap<String, PublishSubject<in Any?>>()
+    private val bank = HashMap<String, BehaviorSubject<in Any?>>()
 
     fun has(streamName: String): Boolean {
         return bank.containsKey(streamName)
@@ -29,9 +30,9 @@ class Ocean {
                 { s1: Any?, s2: Any? -> transform(s1, s2) }
     }
 
-    operator fun get(streamName: String): PublishSubject<Any?> {
+    operator fun get(streamName: String): BehaviorSubject<Any?> {
         bank.getOrPut(streamName) {
-            val ps = PublishSubject.create<Any?>()
+            val ps = BehaviorSubject.create<Any?>()
             bank[streamName] = ps
             ps
         }

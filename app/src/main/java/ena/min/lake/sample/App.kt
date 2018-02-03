@@ -22,4 +22,5 @@ class App : Application() {
 
 object Streams {
     val PERSON_SELECTED = "PERSON_SELECTED"
+    val MAIN_ACTIVITY_DESTROYED = "MAIN_ACTIVITY_DESTROYED"
 }

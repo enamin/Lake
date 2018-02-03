@@ -5,7 +5,9 @@ import android.os.Looper
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import java.util.*
 
 /**
@@ -52,14 +54,14 @@ val appUiThread = Schedulers.from { Handler(Looper.getMainLooper()).post { it.ru
 interface OceanInfix {
 
     infix fun <T : Any?> Observable<T>?.perform(that: (T?) -> Unit): Disposable? {
-        return this?.subscribeOn(Schedulers.newThread())?.observeOn(appUiThread)?.subscribe(that)
+        return this?.subscribeOn(Schedulers.newThread())?.subscribe(that)
     }
 
-    infix fun String.from(po: OceanOwner): PublishSubject<Any?> {
+    infix fun String.from(po: OceanOwner): BehaviorSubject<Any?> {
         return po.ocean[this]
     }
 
-    infix fun String.from(o: Ocean): PublishSubject<Any?> {
+    infix fun String.from(o: Ocean): BehaviorSubject<Any?> {
         return o[this]
     }
 
@@ -77,5 +79,9 @@ interface OceanInfix {
 
     infix fun SendHelper.via(streamNames: Iterable<String>) {
         return streamNames.forEach { this.ocean.send(it, this.item) }
+    }
+
+    infix fun <T : Any?> Subject<T>?.pipe(that: Subject<T>): Disposable? {
+        return this?.subscribe { that.onNext(it) }
     }
 }

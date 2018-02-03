@@ -23,6 +23,7 @@ open class Lake<M : ModelContract, V : ViewContract> {
     fun afterFlushed(): Observable<Unit> = afterFlushed
 
     open fun flush() {
+
         view?.destroyView()
         afterFlushed.onNext(Unit)
         afterFlushed.onComplete()
