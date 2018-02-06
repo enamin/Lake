@@ -58,11 +58,11 @@ interface CloudInfix {
         return this?.cloud?.get(this.streamName)?.subscribe(func as (Any?)->Unit)
     }
 
-    infix fun String.from(po: CloudOwner): BehaviorSubject<Any?> {
+    infix fun String.from(po: CloudOwner): Subject<Any?> {
         return po.cloud[this]
     }
 
-    infix fun String.from(o: Cloud): BehaviorSubject<Any?> {
+    infix fun String.from(o: Cloud): Subject<Any?> {
         return o[this]
     }
 

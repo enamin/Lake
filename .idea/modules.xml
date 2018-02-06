@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/JenkinsTest.iml" filepath="$PROJECT_DIR$/JenkinsTest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Lake.iml" filepath="$PROJECT_DIR$/.idea/Lake.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/lake/lake.iml" filepath="$PROJECT_DIR$/lake/lake.iml" />
-      <module fileurl="file://$PROJECT_DIR$/omvl.iml" filepath="$PROJECT_DIR$/omvl.iml" />
     </modules>
   </component>
 </project>

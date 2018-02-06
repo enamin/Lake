@@ -11,22 +11,22 @@ class Cloud {
     }
 
     fun remove(streamName: String) {
-        bank[streamName]?.onComplete()
+        get(streamName).onComplete()
         bank.remove(streamName)
     }
 
-    operator fun get(streamName: String): BehaviorSubject<Any?> {
+    operator fun get(streamName: String): BehaviorSubject<in Any?> {
         bank.getOrPut(streamName) {
-            val ps = BehaviorSubject.create<Any?>()
-            bank[streamName] = ps
-            ps
+            val s = BehaviorSubject.create<Any?>()
+            bank[streamName] = s
+            s
         }
 
         return bank[streamName]!!
     }
 
     fun send(streamName: String, item: Any? = Unit) {
-        bank[streamName]?.onNext(item)
+        get(streamName).onNext(item)
     }
 
     fun sendToAll(item: Any? = Unit) {
