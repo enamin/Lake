@@ -11,8 +11,6 @@ import java.util.concurrent.TimeUnit
  */
 
 class SimpleLake : EasyLake() {
-
-    private var isConnected = false
     private val cloud = Cloud()
 
     init {
@@ -20,30 +18,22 @@ class SimpleLake : EasyLake() {
         defineStream(STREAM_UPDATE_TIMER_TEXT, Stream<String>(cloud, STREAM_UPDATE_TIMER_TEXT))
     }
 
-    override fun connect(): SimpleLake {
+    override fun connect() {
         super.connect()
-
-        if (isConnected) {
-            return this
-        }
-
-        isConnected = true
 
         var time = 10
         Observable.interval(1, TimeUnit.SECONDS)
                 .subscribe {
                     onClockTick(time--)
                 } can this
-
-        return this
     }
 
     private fun onClockTick(time: Int) {
         "$time" sendTo get(STREAM_UPDATE_TIMER_TEXT)
 
         if (time == 0) {
-            isConnected = false
             Unit sendTo get(STREAM_FINISH)
+            disconnect()
         }
     }
 

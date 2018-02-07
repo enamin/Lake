@@ -41,6 +41,20 @@
             android:text=""
             />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#99dddddd"
+            android:shadowColor="#000000"
+            android:shadowDy="1"
+            android:layout_marginTop="8dp"
+            android:shadowDx="1"
+            android:shadowRadius="5"
+            android:textSize="16dp"
+            android:gravity="center"
+            android:text="Rotating the device, even pressing back and start the activity again, won't reset the timer!"
+            />
+
     </LinearLayout>
 
 

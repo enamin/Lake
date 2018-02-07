@@ -17,9 +17,14 @@ class GeneralTests {
         bs.onNext(2)
         bs.onNext(3)
 
-        bs.subscribe {
-            Assert.assertEquals(3, it)
+        bs.skip(1).subscribe {
+            System.out.println("Hi!!")
+            Assert.assertEquals(4, it)
         }
+
+        bs.onNext(4)
+
+
     }
 
     @Test

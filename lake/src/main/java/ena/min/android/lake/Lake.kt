@@ -8,6 +8,8 @@ package ena.min.android.lake
 open class Lake {
 
     open val streams = HashMap<String, Stream<*>>()
+    var isConnected: Boolean = false
+    private set
 
     fun defineStream(key: String, stream: Stream<*>) {
         streams[key] = stream
@@ -15,8 +17,12 @@ open class Lake {
 
     operator fun get(streamKey: String): Stream<*>? = streams[streamKey]
 
-    open fun connect(): Lake = also {
+    open fun connect() {
+        isConnected = true
+    }
 
+    open fun disconnect() {
+        isConnected = false
     }
 
 }

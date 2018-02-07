@@ -17,16 +17,15 @@ class MainLake(val model: MainModelContract) : EasyLake() {
     val STREAM_SHOW_LIST = Stream<Iterable<MainModel.Item>>(cloud, "STREAM_SHOW_LIST")
 
 
-    override fun connect(): MainLake {
+    override fun connect() {
         super.connect()
 
         model.accessData() pipeTo STREAM_SHOW_LIST
 
-        STREAM_LIST_CLICKS.open().delay(300, TimeUnit.MILLISECONDS) perform {
+        STREAM_LIST_CLICKS.open().delay(300, TimeUnit.MILLISECONDS) thenDo {
             (it as? MainModel.Item?)?.destClazz sendTo STREAM_START_ACTIVITY
         } can this
 
-        return this
     }
 
 }

@@ -19,13 +19,13 @@ class TestActivityResult1Lake : CloudInfix {
         val resultItem = ResultItem("test", -1)
         resultItem sendTo ActivityResult1Lake.STREAM_PERSON_SELECTED
 
-        lake.STREAM_UPDATE_TEXT perform {
+        lake.STREAM_UPDATE_TEXT thenDo {
             Assert.assertEquals("${resultItem.name} : ${resultItem.age}", it)
         }
 
         Unit sendTo lake.STREAM_BUTTON_CLICKS
 
-        lake.STREAM_START_AN_ACTIVITY perform {
+        lake.STREAM_START_AN_ACTIVITY thenDo {
             Assert.assertEquals(ActivityResultActivity2::class.java, it)
         }
 

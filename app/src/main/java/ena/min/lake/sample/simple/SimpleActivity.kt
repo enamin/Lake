@@ -18,17 +18,19 @@ class SimpleActivity : AppCompatActivity(), DisposableCan, AllInfixes {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple)
 
-        lake[SimpleLake.STREAM_UPDATE_TIMER_TEXT] perform {
+        lake[SimpleLake.STREAM_UPDATE_TIMER_TEXT] thenDo  {
             tvSimpleTime.text = it as? CharSequence?
         } can this
 
-        lake[SimpleLake.STREAM_FINISH] perform { finish() } can this
+        lake[SimpleLake.STREAM_FINISH] thenDo  { finish() } can this
 
-        lake.connect()
+        if (!lake.isConnected) {
+            lake.connect()
+        }
     }
 
     override fun onDestroy() {
-        disposeAll()
+        clearCan()
         super.onDestroy()
     }
 

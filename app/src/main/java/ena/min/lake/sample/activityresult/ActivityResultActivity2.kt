@@ -3,25 +3,31 @@ package ena.min.lake.sample.activityresult
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.example.aminenami.jenkinstest.R
-import ena.min.android.lake.Cloud
-import ena.min.android.lake.CloudInfix
-import ena.min.android.lake.EasyLake
-import ena.min.android.lake.Stream
+import ena.min.android.lake.*
 import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_result2.*
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
-class ActivityResultActivity2 : AppCompatActivity(), CloudInfix {
-
+class ActivityResultActivity2 : AppCompatActivity(), DisposableCan, AllInfixes {
+    override val disposables = ArrayList<Disposable?>()
+    val lake = ActivityResult2Lake()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result2)
 
-        val lake = ActivityResult2Lake()
-        lake.STREAM_SET_BIG_TEXT perform { tvNameAndAge.text = it }
-        lake.STREAM_FINISH perform { finish() }
+
+        lake.STREAM_SET_BIG_TEXT thenDo { tvNameAndAge.text = it } can this
+        lake.STREAM_FINISH thenDo { finish() } can this
         lake.connect()
+    }
+
+    override fun onDestroy() {
+        clearCan()
+        lake.disconnect()
+        super.onDestroy()
     }
 }
 
@@ -41,7 +47,7 @@ class ActivityResult2Lake : EasyLake() {
             ResultItem("Jack", 27)
     )
 
-    override fun connect(): ActivityResult2Lake {
+    override fun connect() {
         super.connect()
 
         val resultItem = resultItems[Random().nextInt(resultItems.size)]
@@ -49,12 +55,10 @@ class ActivityResult2Lake : EasyLake() {
         val report = "Hi, I'm ${resultItem.name}. I'm ${resultItem.age}"
         report sendTo STREAM_SET_BIG_TEXT
 
-        Observable.just(Unit).delay(2, TimeUnit.SECONDS) perform  {
+        Observable.just(Unit).delay(2, TimeUnit.SECONDS) thenDo {
             sendResult(resultItem)
             Unit sendTo STREAM_FINISH
         }
-
-        return this
     }
 
     private fun sendResult(resultItem: ResultItem) {

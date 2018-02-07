@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.aminenami.jenkinstest.R
 import ena.min.android.lake.AllInfixes
-import ena.min.android.lake.CloudInfix
 import ena.min.android.lake.DisposableCan
 import ena.min.android.lake.Stream
 import ena.min.lake.sample.activityresult.ActivityResultActivity1
@@ -33,11 +32,11 @@ class MainActivity : AppCompatActivity(), DisposableCan, AllInfixes {
 
         rvMain?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        mainLake.STREAM_START_ACTIVITY perform {
+        mainLake.STREAM_START_ACTIVITY thenDo {
             startActivity(Intent(this, it))
         } can this
 
-        mainLake.STREAM_SHOW_LIST perform {
+        mainLake.STREAM_SHOW_LIST thenDo {
             val items = it?: emptyList()
             val adapter = MainAdapter(this, items)
             rvMain?.adapter = adapter
@@ -50,7 +49,8 @@ class MainActivity : AppCompatActivity(), DisposableCan, AllInfixes {
 
     override fun onDestroy() {
         //Unsubscribe from all streams
-        disposeAll()
+        clearCan()
+        mainLake.disconnect()
         //Just tell everyone that the main activity is destroyed (optional):
         Unit sendTo Stream<Unit>(appCloud, Streams.MAIN_ACTIVITY_DESTROYED)
 

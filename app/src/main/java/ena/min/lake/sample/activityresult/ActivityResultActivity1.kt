@@ -4,10 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.example.aminenami.jenkinstest.R
-import ena.min.android.lake.CloudInfix
+import ena.min.android.lake.AllInfixes
+import ena.min.android.lake.DisposableCan
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_result1.*
 
-class ActivityResultActivity1 : AppCompatActivity(), CloudInfix {
+class ActivityResultActivity1 : AppCompatActivity(), DisposableCan, AllInfixes {
+    override val disposables = ArrayList<Disposable?>()
 
     val lake = ActivityResult1Lake()
 
@@ -16,8 +19,8 @@ class ActivityResultActivity1 : AppCompatActivity(), CloudInfix {
 
         setContentView(R.layout.activity_result1)
 
-        lake.STREAM_START_AN_ACTIVITY perform { startAnActivity(it) }
-        lake.STREAM_UPDATE_TEXT perform { updateText(it) }
+        lake.STREAM_START_AN_ACTIVITY thenDo { startAnActivity(it) } can this
+        lake.STREAM_UPDATE_TEXT thenDo { updateText(it) } can this
 
         btnStartNextActivity.setOnClickListener {
             Unit sendTo lake.STREAM_BUTTON_CLICKS
@@ -26,13 +29,19 @@ class ActivityResultActivity1 : AppCompatActivity(), CloudInfix {
         lake.connect()
     }
 
-    fun startAnActivity(clazz: Class<*>?) {
+    private fun startAnActivity(clazz: Class<*>?) {
         clazz ?: return
         startActivity(Intent(this, clazz))
     }
 
-    fun updateText(text: String?) {
+    private fun updateText(text: String?) {
         tvResult.text = text
+    }
+
+    override fun onDestroy() {
+        lake.disconnect()
+        clearCan()
+        super.onDestroy()
     }
 
 }

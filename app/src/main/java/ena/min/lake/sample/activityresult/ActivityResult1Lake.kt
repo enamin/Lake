@@ -20,18 +20,16 @@ class ActivityResult1Lake : EasyLake() {
     val STREAM_START_AN_ACTIVITY = Stream<Class<*>>(cloud, "STREAM_START_AN_ACTIVITY")
 
 
-    override fun connect(): ActivityResult1Lake {
+    override fun connect() {
         super.connect()
 
-        STREAM_PERSON_SELECTED perform {
+        STREAM_PERSON_SELECTED thenDo {
             "${it?.name} : ${it?.age}" sendTo STREAM_UPDATE_TEXT
         } can this
 
-        STREAM_BUTTON_CLICKS perform {
+        STREAM_BUTTON_CLICKS thenDo {
             ActivityResultActivity2::class.java sendTo STREAM_START_AN_ACTIVITY
         } can this
-
-        return this
     }
 }
 

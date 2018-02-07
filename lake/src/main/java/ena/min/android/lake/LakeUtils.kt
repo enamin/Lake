@@ -7,6 +7,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.Subject
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by aminenami on 2/1/18.
@@ -15,12 +16,18 @@ import io.reactivex.subjects.Subject
 
 open class EasyLake : Lake(), DisposableCan, AllInfixes {
     override val disposables = ArrayList<Disposable?>()
+    override fun disconnect() {
+        super.disconnect()
+        clearCan()
+    }
 }
 
 interface DisposableCan {
     val disposables: ArrayList<Disposable?>
-    fun disposeAll() {
+
+    fun clearCan() {
         disposables.forEach { it?.dispose() }
+        disposables.clear()
     }
 
     fun can(disposable: Disposable?) {
@@ -46,15 +53,20 @@ val appUiThread = Schedulers.from { Handler(Looper.getMainLooper()).post { it.ru
 
 interface CloudInfix {
 
-//    infix fun <T : Any?> Observable<T>?.perform(that: (T?) -> Unit): Disposable? {
+//    infix fun <T : Any?> Observable<T>?.thenDo(that: (T?) -> Unit): Disposable? {
 //        return this?.subscribeOn(Schedulers.newThread())?.subscribe(that)
 //    }
 
-    infix fun <T> Observable<T>?.perform(func: (T?)-> Unit): Disposable? {
+    infix fun <T> Observable<T>?.thenDo(func: (T?)-> Unit): Disposable? {
         return this?.subscribe(func)
     }
 
-    infix fun <T: Any?> Stream<T>?.perform(func: (T?)->Unit): Disposable? {
+    infix fun <T: Any?> Stream<T>?.thenDo(func: (T?)->Unit): Disposable? {
+        return this?.cloud?.get(this.streamName)?.skip(1, TimeUnit.MILLISECONDS)?.subscribe(func as (Any?)->Unit)
+
+    }
+
+    infix fun <T: Any?> Stream<T>?.nowDo(func: (T?)->Unit): Disposable? {
         return this?.cloud?.get(this.streamName)?.subscribe(func as (Any?)->Unit)
     }
 
