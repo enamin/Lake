@@ -1,9 +1,11 @@
 package ena.min.lake.sample
 
+import android.util.Log
 import ena.min.android.lake.Cloud
 import ena.min.android.lake.EasyLake
 import ena.min.android.lake.Stream
 import io.reactivex.Observable
+import io.reactivex.rxkotlin.switchOnNext
 import org.json.JSONObject
 
 /**
@@ -22,7 +24,16 @@ class NetworkLake(val networkLayerContract: NetworkLayerContract) : EasyLake() {
         super.connect()
 
         val responder = networkLayerContract::respond
-        STREAM_REQUEST pipeTo responder pipeTo STREAM_RESPONSE
+//        STREAM_REQUEST pipeTo responder pipeTo STREAM_RESPONSE
+
+//        STREAM_REQUEST.open() thenDo {
+//            responder(it) pipeTo STREAM_RESPONSE
+//        }
+
+        STREAM_REQUEST.open().map { responder(it) }.switchOnNext() .subscribe {
+            it sendTo STREAM_RESPONSE
+        }
+//        STREAM_REQUEST.open().map { responder(it) }.switchOnNext() pipeTo STREAM_RESPONSE
     }
 }
 
@@ -36,7 +47,7 @@ interface NetRequestContract {
 interface NetResponseContract {
     val name: String
     val netRequest: NetRequestContract
-    val json: JSONObject
+    val response: String
     val isFailed: Boolean
     val code: Int
 }

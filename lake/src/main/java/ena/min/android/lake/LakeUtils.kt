@@ -6,6 +6,7 @@ import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 import java.util.concurrent.TimeUnit
 
@@ -93,8 +94,26 @@ interface CloudInfix {
         return Observable.concat(this.map { that(it) })
     }
 
-    infix fun <T : Any, K> Stream<T>.pipeTo(that: (T) -> Observable<K>): Observable<K> {
-        return Observable.concat(this.open().map { that(it) })
-    }
+//    infix fun <T : Any, K> Stream<T>.pipeTo(that: (T) -> Observable<K>): Observable<K> {
+////        return Observable.concat(this.open().map { that(it) })
+//        val ps = PublishSubject.create<K>()
+//        var dd: Disposable
+//        dd = this thenDo {
+//            fun _dispose() {
+//                d.dispose()
+//                dd.dispose()
+//            }
+//            fun _do(item: K) {
+//                ps.onNext(item)
+//                _dispose()
+//            }
+//            val d = that(it).subscribe {
+//                _do(it)
+//            }
+//
+//
+//        }
+//        return ps
+//    }
 
 }

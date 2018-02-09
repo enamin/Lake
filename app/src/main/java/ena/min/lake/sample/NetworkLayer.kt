@@ -1,5 +1,6 @@
 package ena.min.lake.sample
 
+import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import okhttp3.*
@@ -21,10 +22,10 @@ class NetworkLayer : NetworkLayerContract {
     override fun respond(netRequestContract: NetRequestContract): Observable<NetResponseContract> {
         val pSubject = PublishSubject.create<NetResponseContract>()
 
-        fun _send(isFailed: Boolean, code: Int = -1000, respJson: JSONObject = JSONObject()) {
+        fun _send(isFailed: Boolean, code: Int = -1000, response: String = "") {
             pSubject.onNext(
                     object : NetResponseContract {
-                        override val json = respJson
+                        override val response = response
                         override val isFailed = isFailed
                         override val name = netRequestContract.name
                         override val netRequest = netRequestContract
@@ -47,18 +48,9 @@ class NetworkLayer : NetworkLayerContract {
                 val str = response?.body()?.string()
                 if (str == null) {
                     _send(true)
-                    return
+                } else {
+                    _send(false, response.code(), str)
                 }
-
-                val json = JSONObject()
-                try {
-                    val data = JSONObject(str)
-                    json.put("data", data)
-                } catch (e: JSONException) {
-                    json.put("data", JSONArray(str))
-                }
-
-                _send(false, response.code(), json)
             }
 
         })

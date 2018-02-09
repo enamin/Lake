@@ -6,6 +6,7 @@ import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.example.aminenami.jenkinstest.R
@@ -45,6 +46,14 @@ class ListActivity : AppCompatActivity(), AllInfixes, DisposableCan {
         rvList.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         rvList.itemAnimator = DefaultItemAnimator()
         rvList.adapter = adapter
+
+        btnRequest.setOnClickListener { Unit sendTo lake.STREAM_CLICKS }
+
+        lake.STREAM_UPDATE_UI.open().observeOn(appUiThread) thenDo {
+            btnRequest.visibility = if (it.contains(ListUiElements.BUTTON)) View.VISIBLE else View.GONE
+            pbRequest.visibility = if (it.contains(ListUiElements.LOADING)) View.VISIBLE else View.GONE
+            rvList.visibility = if (it.contains(ListUiElements.LIST)) View.VISIBLE else View.GONE
+        } can this
 
         lake.STREAM_ERROR.open().observeOn(appUiThread) thenDo {
             Toast.makeText(this, it, Toast.LENGTH_LONG).show()
