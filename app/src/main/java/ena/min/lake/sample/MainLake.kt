@@ -22,8 +22,8 @@ class MainLake(val model: MainModelContract) : EasyLake() {
 
         model.accessData() pipeTo STREAM_SHOW_LIST
 
-        STREAM_LIST_CLICKS.open().delay(300, TimeUnit.MILLISECONDS) thenDo {
-            (it as? MainModel.Item?)?.destClazz sendTo STREAM_START_ACTIVITY
+        STREAM_LIST_CLICKS.open().delay(150, TimeUnit.MILLISECONDS) thenDo {
+            it.destClazz sendTo STREAM_START_ACTIVITY
         } can this
 
     }
@@ -32,10 +32,4 @@ class MainLake(val model: MainModelContract) : EasyLake() {
 
 interface MainModelContract {
     fun accessData(): Observable<Iterable<MainModel.Item>>
-}
-
-interface MainViewContract {
-    val listClicks: Observable<MainModel.Item>
-    fun showList(items: Iterable<MainModel.Item>)
-    fun startActivity(clazz: Class<*>)
 }

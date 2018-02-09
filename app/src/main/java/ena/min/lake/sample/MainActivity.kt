@@ -14,6 +14,7 @@ import ena.min.android.lake.AllInfixes
 import ena.min.android.lake.DisposableCan
 import ena.min.android.lake.Stream
 import ena.min.lake.sample.activityresult.ActivityResultActivity1
+import ena.min.lake.sample.list.ListActivity
 import ena.min.lake.sample.simple.SimpleActivity
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -24,11 +25,13 @@ import java.util.*
 
 class MainActivity : AppCompatActivity(), DisposableCan, AllInfixes {
     override val disposables = ArrayList<Disposable?>()
-    private val mainLake = MainLake(MainModel())
+    private lateinit var mainLake: MainLake
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        mainLake = MainLake(MainModel())
 
         rvMain?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
@@ -63,7 +66,8 @@ class MainModel : MainModelContract {
     override fun accessData(): Observable<Iterable<Item>> {
         return Observable.just(listOf(
                 Item("Simple Activity", "", SimpleActivity::class.java),
-                Item("Activity Result", "", ActivityResultActivity1::class.java)
+                Item("Activity Result", "", ActivityResultActivity1::class.java),
+                Item("a List fom Net", "", ListActivity::class.java)
         ))
     }
 

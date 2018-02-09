@@ -10,13 +10,11 @@ import java.util.concurrent.TimeUnit
  * Created by aminenami on 2/2/18.
  */
 
-class SimpleLake : EasyLake() {
+class SimpleLake private constructor() : EasyLake() {
     private val cloud = Cloud()
 
-    init {
-        defineStream(STREAM_FINISH, Stream<Unit>(cloud, STREAM_FINISH))
-        defineStream(STREAM_UPDATE_TIMER_TEXT, Stream<String>(cloud, STREAM_UPDATE_TIMER_TEXT))
-    }
+    val STREAM_FINISH = Stream<Unit>(cloud, "STREAM_FINISH")
+    val STREAM_UPDATE_TIMER_TEXT = Stream<String>(cloud, "STREAM_UPDATE_TIMER_TEXT")
 
     override fun connect() {
         super.connect()
@@ -29,18 +27,15 @@ class SimpleLake : EasyLake() {
     }
 
     private fun onClockTick(time: Int) {
-        "$time" sendTo get(STREAM_UPDATE_TIMER_TEXT)
+        "$time" sendTo STREAM_UPDATE_TIMER_TEXT
 
         if (time == 0) {
-            Unit sendTo get(STREAM_FINISH)
+            Unit sendTo STREAM_FINISH
             disconnect()
         }
     }
 
     companion object {
-        val STREAM_UPDATE_TIMER_TEXT = "STREAM_UPDATE_TIMER_TEXT"
-        val STREAM_FINISH = "STREAM_FINISH"
-
         var instance = SimpleLake()
             private set
     }

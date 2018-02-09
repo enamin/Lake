@@ -1,10 +1,11 @@
 package ena.min.android.lake
 
+import android.util.Log
 import io.reactivex.subjects.BehaviorSubject
 
 class Cloud {
 
-    private val bank = HashMap<String, BehaviorSubject<in Any?>>()
+    private val bank = HashMap<String, BehaviorSubject<in Any>>()
 
     fun has(streamName: String): Boolean {
         return bank.containsKey(streamName)
@@ -15,9 +16,9 @@ class Cloud {
         bank.remove(streamName)
     }
 
-    operator fun get(streamName: String): BehaviorSubject<in Any?> {
+    operator fun get(streamName: String): BehaviorSubject<in Any> {
         bank.getOrPut(streamName) {
-            val s = BehaviorSubject.create<Any?>()
+            val s = BehaviorSubject.create<Any>()
             bank[streamName] = s
             s
         }
@@ -25,26 +26,30 @@ class Cloud {
         return bank[streamName]!!
     }
 
-    fun send(streamName: String, item: Any? = Unit) {
+    fun send(streamName: String, item: Any = Unit) {
         get(streamName).onNext(item)
     }
 
-    fun sendToAll(item: Any? = Unit) {
+    fun sendToAll(item: Any = Unit) {
         bank.values.forEach { it.onNext(item) }
     }
 
 }
 
-data class Stream<T: Any?>(val cloud: Cloud, val streamName: String) {
+data class Stream<T : Any>(val cloud: Cloud, val streamName: String) {
     fun send(item: T) {
+        Log.d("LAKE_TRANSACTIONS", "Stream.send() $item")
         cloud.send(streamName, item)
     }
-    fun open() = cloud[streamName]
+
+    fun open(): BehaviorSubject<T> {
+        return cloud[streamName] as BehaviorSubject<T>
+    }
 }
 
 interface CloudOwner {
     val cloud: Cloud
-    fun send(streamName: String, item: Any? = Unit) {
+    fun send(streamName: String, item: Any = Unit) {
         this.cloud.send(streamName, item)
     }
 }

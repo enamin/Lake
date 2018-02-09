@@ -11,12 +11,17 @@ import kotlin.properties.Delegates
 var appCloud: Cloud by Delegates.notNull()
     private set
 
+var appNetworkLake: NetworkLake by Delegates.notNull()
+    private set
+
 class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
         appCloud = Cloud()
+        appNetworkLake = NetworkLake(NetworkLayer())
+                .also { it.connect() }
     }
 }
 
