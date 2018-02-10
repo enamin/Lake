@@ -76,7 +76,7 @@ interface CloudInfix {
 
     infix fun <T : Any> Observable<T>.pipeTo(that: Stream<T>): Disposable? {
         return this.subscribe {
-            Log.d("LAKE_TRANSACTIONS", "pipeTo(): ITEM: $it -> STEAM: $that")
+            Log.d("HAYYYYY", "pipeTo(): ITEM: $it -> STEAM: $that")
             that.send(it)
         }
     }
@@ -86,6 +86,7 @@ interface CloudInfix {
 //    }
 
     infix fun <T : Any, K : Any> Stream<T>.pipeTo(that: (T) -> Observable<K>): Observable<K> {
+        Log.d("HAYYYYY!", "pipeTo: this: $this --> that: $that")
         return this.open().map { that(it) }.switchOnNext()
     }
 

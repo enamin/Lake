@@ -42,6 +42,8 @@ class ListLake(private val model: ListModelContract) : EasyLake() {
 
 
     private fun requestData() {
+        Log.d("HAYYYYY!", "ListLake: requestData: CALLED!")
+
         clearCan(requestDisposable)
 
         requestDisposable = model.accessData() thenDo {

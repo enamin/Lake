@@ -15,6 +15,8 @@ import org.json.JSONObject
 class ListModel : ListModelContract, AllInfixes {
     override fun accessData(): Observable<ListResponse> {
 
+        Log.d("HAYYYYY!", "ListModel: accessData: CALLED!")
+
         appNetworkLake.STREAM_REQUEST.send(object : NetRequestContract {
             override val name: String = "list"
             override val url: String = "https://jsonplaceholder.typicode.com/posts"
