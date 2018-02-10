@@ -24,7 +24,7 @@ class ActivityResultActivity1 : AppCompatActivity(), DisposableCan, AllInfixes {
         //This is the part we get the result from the next Activity
         //We use [[peek]] because we want to access the most recent item inside the stream
         //Even if it has been emitted before our subscription
-        lake.STREAM_UPDATE_TEXT peek { updateText(it) } can this
+        lake.STREAM_UPDATE_TEXT thenDo { updateText(it) } can this
 
         btnStartNextActivity.setOnClickListener {
             Unit sendTo lake.STREAM_BUTTON_CLICKS

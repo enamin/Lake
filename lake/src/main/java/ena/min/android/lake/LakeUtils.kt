@@ -5,10 +5,9 @@ import android.os.Looper
 import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.switchOnNext
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by aminenami on 2/1/18.
@@ -31,6 +30,11 @@ interface DisposableCan {
         disposables.clear()
     }
 
+    fun clearCan(disposable: Disposable?) {
+        disposables.remove(disposable)
+        disposable?.dispose()
+    }
+
     fun can(disposable: Disposable?) {
         disposables.add(disposable)
     }
@@ -45,11 +49,6 @@ interface AllInfixes : CloudInfix {
 
 }
 
-class SendHelper(val cloud: Cloud?, val item: Any) {
-    fun sendToAll() = cloud?.sendToAll(item)
-    fun send(streamName: String) = cloud?.send(streamName, item)
-}
-
 val appUiThread = Schedulers.from { Handler(Looper.getMainLooper()).post { it.run() } }
 
 interface CloudInfix {
@@ -59,24 +58,16 @@ interface CloudInfix {
     }
 
     infix fun <T : Any> Stream<T>.thenDo(func: ((T) -> Unit)): Disposable {
-        return this.open().skip(1, TimeUnit.MILLISECONDS).subscribe { func(it as T) }
-
-    }
-
-    infix fun <T : Any> Stream<T>.peek(func: (T) -> Unit): Disposable {
         return this.open().subscribe { func(it as T) }
+
     }
+
+//    infix fun <T : Any> Stream<T>.peek(func: (T) -> Unit): Disposable {
+//        return this.open().subscribe { func(it as T) }
+//    }
 
     infix fun <T : Any> T.sendTo(stream: Stream<T>) {
         return stream.send(this)
-    }
-
-    infix fun SendHelper.via(streamName: String): Unit? {
-        return this.cloud?.send(streamName, this.item)
-    }
-
-    infix fun SendHelper.via(streamNames: Iterable<String>): Unit? {
-        return streamNames.forEach { this.cloud?.send(it, this.item) }
     }
 
     infix fun <T> Observable<T>.pipeTo(that: Subject<T>): Disposable? {
@@ -90,30 +81,16 @@ interface CloudInfix {
         }
     }
 
-    infix fun <T, K> Observable<T>.pipeTo(that: (T) -> Observable<K>): Observable<K> {
-        return Observable.concat(this.map { that(it) })
+//    infix fun <T, K> Observable<T>.pipeTo(that: (T) -> Observable<K>): Observable<K> {
+//        return Observable.concat(this.map { that(it) })
+//    }
+
+    infix fun <T : Any, K : Any> Stream<T>.pipeTo(that: (T) -> Observable<K>): Observable<K> {
+        return this.open().map { that(it) }.switchOnNext()
     }
 
-//    infix fun <T : Any, K> Stream<T>.pipeTo(that: (T) -> Observable<K>): Observable<K> {
-////        return Observable.concat(this.open().map { that(it) })
-//        val ps = PublishSubject.create<K>()
-//        var dd: Disposable
-//        dd = this thenDo {
-//            fun _dispose() {
-//                d.dispose()
-//                dd.dispose()
-//            }
-//            fun _do(item: K) {
-//                ps.onNext(item)
-//                _dispose()
-//            }
-//            val d = that(it).subscribe {
-//                _do(it)
-//            }
-//
-//
-//        }
-//        return ps
+//    fun <T> Observable<T>.skipCurrent(): Observable<T> {
+//        return this.skip(1)
 //    }
 
 }

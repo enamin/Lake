@@ -1,49 +1,52 @@
 package ena.min.android.lake
 
-import android.util.Log
-import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 class Cloud {
 
-    private val bank = HashMap<String, BehaviorSubject<in Any>>()
+    private val subjects = HashMap<String, PublishSubject<in Any>>()
 
     fun has(streamName: String): Boolean {
-        return bank.containsKey(streamName)
+        return subjects.containsKey(streamName)
     }
 
     fun remove(streamName: String) {
         get(streamName).onComplete()
-        bank.remove(streamName)
+        subjects.remove(streamName)
     }
 
-    operator fun get(streamName: String): BehaviorSubject<in Any> {
-        bank.getOrPut(streamName) {
-            val s = BehaviorSubject.create<Any>()
-            bank[streamName] = s
+    operator fun get(streamName: String): PublishSubject<in Any> {
+        subjects.getOrPut(streamName) {
+            val s = PublishSubject.create<Any>()
+            subjects[streamName] = s
             s
         }
 
-        return bank[streamName]!!
+        return subjects[streamName]!!
     }
+
 
     fun send(streamName: String, item: Any = Unit) {
         get(streamName).onNext(item)
     }
 
     fun sendToAll(item: Any = Unit) {
-        bank.values.forEach { it.onNext(item) }
+        subjects.values.forEach { it.onNext(item) }
     }
 
 }
 
 data class Stream<T : Any>(val cloud: Cloud, val streamName: String) {
+    var memory: Any? = null
+        private set
+
     fun send(item: T) {
-        Log.d("LAKE_TRANSACTIONS", "Stream.send() $item")
         cloud.send(streamName, item)
+        memory = item
     }
 
-    fun open(): BehaviorSubject<T> {
-        return cloud[streamName] as BehaviorSubject<T>
+    fun open(): PublishSubject<T> {
+        return cloud[streamName] as PublishSubject<T>
     }
 }
 

@@ -24,16 +24,7 @@ class NetworkLake(val networkLayerContract: NetworkLayerContract) : EasyLake() {
         super.connect()
 
         val responder = networkLayerContract::respond
-//        STREAM_REQUEST pipeTo responder pipeTo STREAM_RESPONSE
-
-//        STREAM_REQUEST.open() thenDo {
-//            responder(it) pipeTo STREAM_RESPONSE
-//        }
-
-        STREAM_REQUEST.open().map { responder(it) }.switchOnNext() .subscribe {
-            it sendTo STREAM_RESPONSE
-        }
-//        STREAM_REQUEST.open().map { responder(it) }.switchOnNext() pipeTo STREAM_RESPONSE
+        STREAM_REQUEST pipeTo responder pipeTo STREAM_RESPONSE
     }
 }
 

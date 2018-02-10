@@ -20,11 +20,13 @@ class ListLake(private val model: ListModelContract) : EasyLake() {
     val STREAM_UPDATE_UI = Stream<Iterable<ListUiElements>>(cloud, "STREAM_UPDATE_UI")
 
     private var isBusy = false
+    private var requestDisposable: Disposable? = null
 
     override fun connect() {
         super.connect()
 
         STREAM_CLICKS.open().filter { !isBusy } thenDo {
+            Log.d("HAYYYYY!", "ListLake: STREAM_CLICKS, isBusy: $isBusy")
             isBusy = true
             requestData()
             updateUiElements(listOf(ListUiElements.LOADING))
@@ -33,15 +35,17 @@ class ListLake(private val model: ListModelContract) : EasyLake() {
     }
 
     private fun updateUiElements(elements: Iterable<ListUiElements>) {
+        Log.d("HAYYYYY!", "ListLake: updateUiElements:: $elements")
         elements sendTo STREAM_UPDATE_UI
     }
 
-    private var requestDisposable: Disposable? = null
+
 
     private fun requestData() {
-        requestDisposable?.dispose()
-        disposables.remove(requestDisposable)
+        clearCan(requestDisposable)
+
         requestDisposable = model.accessData() thenDo {
+            Log.d("HAYYYYY!", "ListLake: requestData: $it")
             isBusy = false
             if (it.error) {
                 updateUiElements(listOf(ListUiElements.BUTTON))
@@ -51,6 +55,7 @@ class ListLake(private val model: ListModelContract) : EasyLake() {
                 sendIntervalOutput(it.list)
             }
         }
+
         requestDisposable can this
     }
 
