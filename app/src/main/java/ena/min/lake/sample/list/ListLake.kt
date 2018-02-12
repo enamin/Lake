@@ -1,19 +1,18 @@
 package ena.min.lake.sample.list
 
-import android.util.Log
 import ena.min.android.lake.Cloud
-import ena.min.android.lake.EasyLake
+import ena.min.android.lake.CloudLake
 import ena.min.android.lake.Stream
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
  * Created by aminenami on 2/9/18.
  */
 
-class ListLake(private val model: ListModelContract) : EasyLake() {
-    private val cloud = Cloud()
+class ListLake(private val model: ListModelContract) : CloudLake() {
     val STREAM_SHOW_ITEM = Stream<ListViewModel>(cloud, "STREAM_SHOW_ITEM")
     val STREAM_ERROR = Stream<String>(cloud, "STREAM_ERROR")
     val STREAM_CLICKS = Stream<Unit>(cloud, "STREAM_CLICKS")
@@ -26,7 +25,6 @@ class ListLake(private val model: ListModelContract) : EasyLake() {
         super.connect()
 
         STREAM_CLICKS.open().filter { !isBusy } thenDo {
-            Log.d("HAYYYYY!", "ListLake: STREAM_CLICKS, isBusy: $isBusy")
             isBusy = true
             requestData()
             updateUiElements(listOf(ListUiElements.LOADING))
@@ -35,23 +33,24 @@ class ListLake(private val model: ListModelContract) : EasyLake() {
     }
 
     private fun updateUiElements(elements: Iterable<ListUiElements>) {
-        Log.d("HAYYYYY!", "ListLake: updateUiElements:: $elements")
         elements sendTo STREAM_UPDATE_UI
     }
 
 
 
     private fun requestData() {
-        Log.d("HAYYYYY!", "ListLake: requestData: CALLED!")
 
         clearCan(requestDisposable)
 
         requestDisposable = model.accessData() thenDo {
-            Log.d("HAYYYYY!", "ListLake: requestData: $it")
             isBusy = false
             if (it.error) {
-                updateUiElements(listOf(ListUiElements.BUTTON))
                 "Connection Problem!" sendTo STREAM_ERROR
+                Timer().schedule(object : TimerTask(){
+                    override fun run() {
+                        updateUiElements(listOf(ListUiElements.BUTTON))
+                    }
+                }, 800)
             } else {
                 updateUiElements(listOf(ListUiElements.LIST))
                 sendIntervalOutput(it.list)

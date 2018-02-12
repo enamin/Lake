@@ -13,15 +13,6 @@ import io.reactivex.subjects.Subject
  * Created by aminenami on 2/1/18.
  */
 
-
-open class EasyLake : Lake(), DisposableCan, AllInfixes {
-    override val disposables = ArrayList<Disposable?>()
-    override fun disconnect() {
-        super.disconnect()
-        clearCan()
-    }
-}
-
 interface DisposableCan {
     val disposables: ArrayList<Disposable?>
 
@@ -76,7 +67,6 @@ interface CloudInfix {
 
     infix fun <T : Any> Observable<T>.pipeTo(that: Stream<T>): Disposable? {
         return this.subscribe {
-            Log.d("HAYYYYY", "pipeTo(): ITEM: $it -> STEAM: $that")
             that.send(it)
         }
     }
@@ -86,7 +76,6 @@ interface CloudInfix {
 //    }
 
     infix fun <T : Any, K : Any> Stream<T>.pipeTo(that: (T) -> Observable<K>): Observable<K> {
-        Log.d("HAYYYYY!", "pipeTo: this: $this --> that: $that")
         return this.open().map { that(it) }.switchOnNext()
     }
 

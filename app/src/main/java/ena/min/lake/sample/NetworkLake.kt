@@ -1,11 +1,9 @@
 package ena.min.lake.sample
 
-import android.util.Log
 import ena.min.android.lake.Cloud
-import ena.min.android.lake.EasyLake
+import ena.min.android.lake.CloudLake
 import ena.min.android.lake.Stream
 import io.reactivex.Observable
-import io.reactivex.rxkotlin.switchOnNext
 import org.json.JSONObject
 
 /**
@@ -15,8 +13,7 @@ import org.json.JSONObject
  * can access and share all the different responses which this lake streams.
  */
 
-class NetworkLake(val networkLayerContract: NetworkLayerContract) : EasyLake() {
-    val cloud = Cloud()
+class NetworkLake(val networkLayerContract: NetworkLayerContract) : CloudLake() {
     val STREAM_REQUEST = Stream<NetRequestContract>(cloud, "STREAM_REQUEST")
     val STREAM_RESPONSE = Stream<NetResponseContract>(cloud, "STREAM_RESPONSE")
 

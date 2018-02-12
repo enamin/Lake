@@ -6,15 +6,6 @@ class Cloud {
 
     private val subjects = HashMap<String, PublishSubject<in Any>>()
 
-    fun has(streamName: String): Boolean {
-        return subjects.containsKey(streamName)
-    }
-
-    fun remove(streamName: String) {
-        get(streamName).onComplete()
-        subjects.remove(streamName)
-    }
-
     operator fun get(streamName: String): PublishSubject<in Any> {
         subjects.getOrPut(streamName) {
             val s = PublishSubject.create<Any>()
@@ -25,6 +16,9 @@ class Cloud {
         return subjects[streamName]!!
     }
 
+    fun has(streamName: String): Boolean {
+        return subjects.containsKey(streamName)
+    }
 
     fun send(streamName: String, item: Any = Unit) {
         get(streamName).onNext(item)
@@ -37,7 +31,7 @@ class Cloud {
 }
 
 data class Stream<T : Any>(val cloud: Cloud, val streamName: String) {
-    var memory: Any? = null
+    var memory: T? = null
         private set
 
     fun send(item: T) {

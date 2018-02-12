@@ -1,5 +1,7 @@
 package ena.min.android.lake
 
+import io.reactivex.disposables.Disposable
+
 /**
  * Created by aminenami on 2/1/18.
  */
@@ -7,15 +9,8 @@ package ena.min.android.lake
 
 open class Lake {
 
-    open val streams = HashMap<String, Stream<*>>()
     var isConnected: Boolean = false
     private set
-
-    fun defineStream(key: String, stream: Stream<*>) {
-        streams[key] = stream
-    }
-
-    operator fun get(streamKey: String): Stream<*>? = streams[streamKey]
 
     open fun connect() {
         isConnected = true
@@ -25,4 +20,14 @@ open class Lake {
         isConnected = false
     }
 
+}
+
+open class CloudLake : Lake(), CloudOwner, DisposableCan, AllInfixes {
+    override val cloud = Cloud()
+    override val disposables = ArrayList<Disposable?>()
+    override fun disconnect() {
+        super.disconnect()
+        clearCan()
+//        cloud.completeAll()
+    }
 }

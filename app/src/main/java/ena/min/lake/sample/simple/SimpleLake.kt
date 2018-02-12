@@ -1,7 +1,7 @@
 package ena.min.lake.sample.simple
 
 import ena.min.android.lake.Cloud
-import ena.min.android.lake.EasyLake
+import ena.min.android.lake.CloudLake
 import ena.min.android.lake.Stream
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
@@ -10,8 +10,7 @@ import java.util.concurrent.TimeUnit
  * Created by aminenami on 2/2/18.
  */
 
-class SimpleLake private constructor() : EasyLake() {
-    private val cloud = Cloud()
+class SimpleLake private constructor() : CloudLake() {
 
     val STREAM_FINISH = Stream<Unit>(cloud, "STREAM_FINISH")
     val STREAM_UPDATE_TIMER_TEXT = Stream<String>(cloud, "STREAM_UPDATE_TIMER_TEXT")
