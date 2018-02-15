@@ -1,12 +1,8 @@
 package ena.min.lake.sample
 
-import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import okhttp3.*
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import java.io.IOException
 
 /**

@@ -1,6 +1,5 @@
 package ena.min.lake.sample
 
-import ena.min.android.lake.Cloud
 import ena.min.android.lake.CloudLake
 import ena.min.android.lake.Stream
 import io.reactivex.Observable
@@ -13,7 +12,7 @@ import org.json.JSONObject
  * can access and share all the different responses which this lake streams.
  */
 
-class NetworkLake(val networkLayerContract: NetworkLayerContract) : CloudLake() {
+class NetworkLake(private val networkLayerContract: NetworkLayerContract) : CloudLake() {
     val STREAM_REQUEST = Stream<NetRequestContract>(cloud, "STREAM_REQUEST")
     val STREAM_RESPONSE = Stream<NetResponseContract>(cloud, "STREAM_RESPONSE")
 
@@ -29,7 +28,9 @@ interface NetRequestContract {
     val name: String
     val url: String
     val method: String
+        get() = "GET"
     val body: JSONObject
+        get() = JSONObject()
 }
 
 interface NetResponseContract {

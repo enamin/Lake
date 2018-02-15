@@ -14,14 +14,12 @@ import org.json.JSONObject
  */
 
 class ListModel : ListModelContract, AllInfixes {
-    
+
     override fun accessData(): Observable<ListResponse> {
 
         val request = object : NetRequestContract {
             override val name: String = "list"
             override val url: String = "https://jsonplaceholder.typicode.com/posts"
-            override val method: String = "GET"
-            override val body: JSONObject = JSONObject()
         }
 
         request sendTo appNetworkLake.STREAM_REQUEST
