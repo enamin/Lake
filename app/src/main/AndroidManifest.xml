@@ -25,9 +25,11 @@
         </activity>
         <activity android:name="ena.min.lake.sample.activityresult.ActivityResultActivity2">
         </activity>
-        <activity android:name="ena.min.lake.sample.list.ListActivity"
-            android:screenOrientation="userPortrait"
-            >
+        <activity
+            android:name="ena.min.lake.sample.list.ListActivity"
+            android:screenOrientation="userPortrait">
+        </activity>
+        <activity android:name="ena.min.lake.sample.masterdetail.MasterDetailActivity">
         </activity>
     </application>
 

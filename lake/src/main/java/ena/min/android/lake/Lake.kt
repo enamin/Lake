@@ -1,6 +1,7 @@
 package ena.min.android.lake
 
 import io.reactivex.disposables.Disposable
+import java.util.*
 
 /**
  * Created by aminenami on 2/1/18.
@@ -10,7 +11,7 @@ import io.reactivex.disposables.Disposable
 open class Lake {
 
     var isConnected: Boolean = false
-    private set
+        private set
 
     open fun connect() {
         isConnected = true
@@ -25,6 +26,9 @@ open class Lake {
 open class CloudLake : Lake(), CloudOwner, DisposableCan, AllInfixes {
     override val cloud = Cloud()
     override val disposables = ArrayList<Disposable?>()
+
+    fun <T : Any> streamOf() = Stream<T>(cloud, UUID.randomUUID().toString())
+
     override fun disconnect() {
         super.disconnect()
         clearCan()

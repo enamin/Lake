@@ -1,13 +1,11 @@
 package ena.min.lake.sample.list
 
-import android.util.Log
 import ena.min.android.lake.AllInfixes
 import ena.min.lake.sample.NetRequestContract
 import ena.min.lake.sample.NetResponseContract
 import ena.min.lake.sample.appNetworkLake
 import io.reactivex.Observable
 import org.json.JSONArray
-import org.json.JSONObject
 
 /**
  * Created by aminenami on 2/9/18.

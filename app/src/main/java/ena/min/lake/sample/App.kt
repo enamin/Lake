@@ -3,6 +3,7 @@ package ena.min.lake.sample
 import android.app.Application
 import com.squareup.leakcanary.LeakCanary
 import ena.min.android.lake.Cloud
+import ena.min.android.lake.Stream
 import kotlin.properties.Delegates
 
 /**
@@ -31,7 +32,6 @@ class App : Application() {
     }
 }
 
-object Streams {
-    val PERSON_SELECTED = "PERSON_SELECTED"
-    val MAIN_ACTIVITY_DESTROYED = "MAIN_ACTIVITY_DESTROYED"
+object AppStreams {
+    val MAIN_ACTIVITY_DESTROYED = Stream<Unit>(appCloud, "MAIN_ACTIVITY_DESTROYED")
 }

@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), DisposableCan, AllInfixes {
         } can this
 
         mainLake.STREAM_SHOW_LIST thenDo {
-            val items = it ?: emptyList()
+            val items = it
             val adapter = MainAdapter(this, items)
             rvMain?.adapter = adapter
             adapter.itemClicks pipeTo mainLake.STREAM_LIST_CLICKS
@@ -46,13 +46,18 @@ class MainActivity : AppCompatActivity(), DisposableCan, AllInfixes {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        Unit sendTo mainLake.STREAM_MAIN_PAGE_VISIBLE
+    }
+
     override fun onDestroy() {
         //Unsubscribe from all streams to prevent any leaks!
         clearCan()
         mainLake.disconnect()
 
-        //Just tell everyone that the main activity is destroyed (optional):
-        Unit sendTo Stream(appCloud, Streams.MAIN_ACTIVITY_DESTROYED)
+        //(Optional) Just tell everyone (e.g. Services) that the main activity is destroyed:
+        Unit sendTo AppStreams.MAIN_ACTIVITY_DESTROYED
 
         super.onDestroy()
     }

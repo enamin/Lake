@@ -13,8 +13,8 @@ import org.json.JSONObject
  */
 
 class NetworkLake(private val networkLayerContract: NetworkLayerContract) : CloudLake() {
-    val STREAM_REQUEST = Stream<NetRequestContract>(cloud, "STREAM_REQUEST")
-    val STREAM_RESPONSE = Stream<NetResponseContract>(cloud, "STREAM_RESPONSE")
+    val STREAM_REQUEST = streamOf<NetRequestContract>()
+    val STREAM_RESPONSE = streamOf<NetResponseContract>()
 
     override fun connect() {
         super.connect()

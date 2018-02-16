@@ -1,7 +1,7 @@
 package ena.min.lake.sample.list
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -12,8 +12,8 @@ import android.widget.Toast
 import com.example.aminenami.jenkinstest.R
 import ena.min.android.lake.AllInfixes
 import ena.min.android.lake.DisposableCan
-import ena.min.android.lake.appUiThread
 import ena.min.lake.sample.MainAdapter
+import ena.min.lake.util.appUiThread
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.android.synthetic.main.row_list.view.*
@@ -24,7 +24,7 @@ class ListActivity : AppCompatActivity(), AllInfixes, DisposableCan {
     private val lake = ListLake(ListModel())
     private val items = ArrayList<ListViewModel>()
 
-    private val adapter = object: RecyclerView.Adapter<MainAdapter.ViewHolder>() {
+    private val adapter = object : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) =
                 MainAdapter.ViewHolder(LayoutInflater.from(this@ListActivity)
                         .inflate(R.layout.row_list, parent, false))
@@ -32,7 +32,7 @@ class ListActivity : AppCompatActivity(), AllInfixes, DisposableCan {
         override fun getItemCount() = items.size
 
         override fun onBindViewHolder(holder: MainAdapter.ViewHolder?, position: Int) {
-            val view = holder?.itemView?: return
+            val view = holder?.itemView ?: return
             val item = items[position]
             view.tvTitle.text = item.title
             view.tvBody.text = item.body

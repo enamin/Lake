@@ -24,7 +24,7 @@
             android:shadowRadius="5"
             android:textSize="16dp"
             android:gravity="center"
-            android:text="This activity receives results from the next activity by using an Ocean."
+            android:text="This activity receives results from the next activity by using a public Stream."
             />
 
         <Button

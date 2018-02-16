@@ -1,9 +1,10 @@
 package ena.min.lake.sample
 
 import ena.min.android.lake.CloudLake
-import ena.min.android.lake.Stream
 import ena.min.lake.sample.activityresult.ActivityResultActivity1
 import ena.min.lake.sample.list.ListActivity
+import ena.min.lake.sample.masterdetail.MasterDetailActivity
+import ena.min.lake.sample.masterdetail.MasterDetailLake
 import ena.min.lake.sample.simple.SimpleActivity
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
@@ -13,9 +14,10 @@ import java.util.concurrent.TimeUnit
  */
 class MainLake(private val model: MainModelContract) : CloudLake() {
 
-    val STREAM_START_ACTIVITY = Stream<Class<*>>(cloud, "STREAM_START_ACTIVITY")
-    val STREAM_LIST_CLICKS = Stream<MainModelItem>(cloud, "STREAM_LIST_CLICKS")
-    val STREAM_SHOW_LIST = Stream<Iterable<MainModelItem>>(cloud, "STREAM_SHOW_LIST")
+    val STREAM_START_ACTIVITY = streamOf<Class<*>>()
+    val STREAM_LIST_CLICKS = streamOf<MainModelItem>()
+    val STREAM_SHOW_LIST = streamOf<Iterable<MainModelItem>>()
+    val STREAM_MAIN_PAGE_VISIBLE = streamOf<Unit>()
 
     override fun connect() {
         super.connect()
@@ -31,6 +33,9 @@ class MainLake(private val model: MainModelContract) : CloudLake() {
                     it.destClazz sendTo STREAM_START_ACTIVITY
                 } can this
 
+        STREAM_MAIN_PAGE_VISIBLE thenDo {
+            Unit sendTo MasterDetailLake.instance.STREAM_RESET_LAKE
+        } can this
     }
 
 }
@@ -50,7 +55,8 @@ class MainModel : MainModelContract {
         return Observable.just(listOf(
                 MainModelItem("Simple Activity", "", SimpleActivity::class.java),
                 MainModelItem("Activity Result", "", ActivityResultActivity1::class.java),
-                MainModelItem("a List fom Net", "", ListActivity::class.java)
+                MainModelItem("a List fom Net", "", ListActivity::class.java),
+                MainModelItem("Master - Detail", "", MasterDetailActivity::class.java)
         ))
     }
 }

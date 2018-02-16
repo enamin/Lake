@@ -1,6 +1,5 @@
 package ena.min.lake.sample.list
 
-import ena.min.android.lake.Cloud
 import ena.min.android.lake.CloudLake
 import ena.min.android.lake.Stream
 import io.reactivex.Observable
@@ -37,7 +36,6 @@ class ListLake(private val model: ListModelContract) : CloudLake() {
     }
 
 
-
     private fun requestData() {
 
         clearCan(requestDisposable)
@@ -46,7 +44,7 @@ class ListLake(private val model: ListModelContract) : CloudLake() {
             isBusy = false
             if (it.error) {
                 "Connection Problem!" sendTo STREAM_ERROR
-                Timer().schedule(object : TimerTask(){
+                Timer().schedule(object : TimerTask() {
                     override fun run() {
                         updateUiElements(listOf(ListUiElements.BUTTON))
                     }

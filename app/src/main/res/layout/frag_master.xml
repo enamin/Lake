@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/blue_background"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvMainItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/ivMainItem"
+        android:textColor="#ffffff"
+        android:shadowColor="#000000"
+        android:shadowDy="2"
+        android:shadowDx="2"
+        android:shadowRadius="7"
+        android:textSize="16dp"
+        android:text="Select the Master:"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvMasterList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</LinearLayout>
