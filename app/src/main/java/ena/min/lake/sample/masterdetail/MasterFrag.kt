@@ -66,7 +66,7 @@ class MasterFrag : MasterDetailFrag(R.layout.frag_master) {
                     view.tvMainItem.setTextColor(Color.parseColor("#ffffff"))
                 } else {
                     view.ivMainItem.alpha = 0.3f
-                    view.tvMainItem.setTextColor(Color.parseColor("#33ffffff"))
+                    view.tvMainItem.setTextColor(Color.parseColor("#99ffffff"))
                 }
             }
         }

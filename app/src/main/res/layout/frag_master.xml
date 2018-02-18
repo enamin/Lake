@@ -19,7 +19,7 @@
         android:shadowDx="2"
         android:shadowRadius="7"
         android:textSize="16dp"
-        android:text="Select the Master:"
+        android:text="Select the Master (and don't forget to rotate your device!):"
         />
 
     <android.support.v7.widget.RecyclerView
