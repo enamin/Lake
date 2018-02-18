@@ -12,10 +12,10 @@ import java.util.concurrent.TimeUnit
  */
 
 class ListLake(private val model: ListModelContract) : CloudLake() {
-    val STREAM_SHOW_ITEM = Stream<ListViewModel>(cloud, "STREAM_SHOW_ITEM")
-    val STREAM_ERROR = Stream<String>(cloud, "STREAM_ERROR")
-    val STREAM_CLICKS = Stream<Unit>(cloud, "STREAM_CLICKS")
-    val STREAM_UPDATE_UI = Stream<Iterable<ListUiElements>>(cloud, "STREAM_UPDATE_UI")
+    val STREAM_SHOW_ITEM = streamOf<ListViewModel>()
+    val STREAM_ERROR = streamOf<String>()
+    val STREAM_CLICKS = streamOf<Unit>()
+    val STREAM_UPDATE_UI = streamOf<Iterable<ListUiElements>>()
 
     private var isBusy = false
     private var requestDisposable: Disposable? = null

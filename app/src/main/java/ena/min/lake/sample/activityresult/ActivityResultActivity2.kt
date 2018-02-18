@@ -33,8 +33,8 @@ class ActivityResultActivity2 : AppCompatActivity(), DisposableCan, AllInfixes {
 
 class ActivityResult2Lake : CloudLake() {
 
-    val STREAM_SET_BIG_TEXT = Stream<String>(cloud, "STREAM_SET_BIG_TEXT")
-    val STREAM_FINISH = Stream<Unit>(cloud, "STREAM_FINISH")
+    val STREAM_SET_BIG_TEXT = streamOf<String>()
+    val STREAM_FINISH = streamOf<Unit>()
 
     private val resultItems = listOf(
             ResultItem("John", 33),

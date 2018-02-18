@@ -18,9 +18,9 @@ class ActivityResult1Lake : CloudLake() {
         val STREAM_PERSON_SELECTED = Stream<ResultItem>(staticCloud, "STREAM_PERSON_SELECTED")
     }
 
-    val STREAM_BUTTON_CLICKS = Stream<Unit>(staticCloud, "STREAM_BUTTON_CLICKS")
-    val STREAM_UPDATE_TEXT = Stream<String>(staticCloud, "STREAM_UPDATE_TEXT")
-    val STREAM_START_AN_ACTIVITY = Stream<Class<*>>(staticCloud, "STREAM_START_AN_ACTIVITY")
+    val STREAM_BUTTON_CLICKS = streamOf<Unit>()
+    val STREAM_UPDATE_TEXT = streamOf<String>()
+    val STREAM_START_AN_ACTIVITY = streamOf<Class<*>>()
 
     override fun connect() {
         super.connect()

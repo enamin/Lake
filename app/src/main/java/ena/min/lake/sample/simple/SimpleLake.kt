@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit
 
 class SimpleLake private constructor() : CloudLake() {
 
-    val STREAM_FINISH = Stream<Unit>(cloud, "STREAM_FINISH")
-    val STREAM_UPDATE_TIMER_TEXT = Stream<String>(cloud, "STREAM_UPDATE_TIMER_TEXT")
+    val STREAM_FINISH = streamOf<Unit>()
+    val STREAM_UPDATE_TIMER_TEXT = streamOf<String>()
 
     override fun connect() {
         super.connect()
