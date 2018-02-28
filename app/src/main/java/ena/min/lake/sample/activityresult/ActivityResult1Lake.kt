@@ -25,13 +25,13 @@ class ActivityResult1Lake : CloudLake() {
     override fun connect() {
         super.connect()
 
-        STREAM_PERSON_SELECTED thenDo {
+        STREAM_PERSON_SELECTED thenDoSafe  {
             "${it.name} : ${it.age}" sendTo STREAM_UPDATE_TEXT
-        } can this
+        }
 
-        STREAM_BUTTON_CLICKS thenDo {
+        STREAM_BUTTON_CLICKS thenDoSafe  {
             ActivityResultActivity2::class.java sendTo STREAM_START_AN_ACTIVITY
-        } can this
+        }
     }
 }
 

@@ -13,7 +13,7 @@ class DetailFrag : MasterDetailFrag(R.layout.frag_detail) {
     private val lake = DetailLake()
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lake.STREAM_SHOW_TEXT thenDo { tvDetails.text = it } can this
+        lake.STREAM_SHOW_TEXT thenDoSafe { tvDetails.text = it }
         lake.connect()
     }
 

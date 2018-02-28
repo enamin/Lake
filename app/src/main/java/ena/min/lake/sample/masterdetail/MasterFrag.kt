@@ -26,12 +26,12 @@ class MasterFrag : MasterDetailFrag(R.layout.frag_master) {
         rvMasterList.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         rvMasterList.adapter = adapter
 
-        lake.STREAM_SHOW_LIST thenDo {
+        lake.STREAM_SHOW_LIST thenDoSafe {
             adapter.items = it
             adapter.notifyDataSetChanged()
-        } can this
+        }
 
-        lake.STREAM_SELECTED_ITEM_ID thenDo { adapter.notifyDataSetChanged() } can this
+        lake.STREAM_SELECTED_ITEM_ID thenDoSafe { adapter.notifyDataSetChanged() }
 
         lake.connect()
     }

@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.row_main_item.view.*
 import java.util.*
 
-class MainActivity : AppCompatActivity(), DisposableCan, AllInfixes {
+class MainActivity : AppCompatActivity(), AllInfixes {
     override val disposables = ArrayList<Disposable?>()
     private lateinit var mainLake: MainLake
 
@@ -31,16 +31,16 @@ class MainActivity : AppCompatActivity(), DisposableCan, AllInfixes {
 
         rvMain?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        mainLake.STREAM_START_ACTIVITY thenDo {
+        mainLake.STREAM_START_ACTIVITY thenDoSafe  {
             startActivity(Intent(this, it))
-        } can this
+        }
 
         mainLake.STREAM_SHOW_LIST thenDo {
             val items = it
             val adapter = MainAdapter(this, items)
             rvMain?.adapter = adapter
             adapter.itemClicks pipeTo mainLake.STREAM_LIST_CLICKS
-        } can this
+        }
 
         mainLake.connect()
 

@@ -33,7 +33,7 @@ class MasterDetailActivity : AppCompatActivity(), DisposableCan, AllInfixes {
             transaction.commit()
 
             lake.STREAM_DETAILS.memory?.let { showDetails() }
-            lake.STREAM_DETAILS thenDo { showDetails() } can this
+            lake.STREAM_DETAILS thenDoSafe { showDetails() }
         }
 
 

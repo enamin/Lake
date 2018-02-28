@@ -1,13 +1,11 @@
 package ena.min.android.lake
 
-import android.os.Handler
-import android.os.Looper
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.switchOnNext
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.Subject
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by aminenami on 2/1/18.
@@ -32,11 +30,49 @@ interface DisposableCan {
 
 }
 
-interface AllInfixes : CloudInfix {
-
-    infix fun Disposable?.can(that: DisposableCan) {
-        that.can(this)
+interface InfixDisposableCan: DisposableCan, CloudInfix {
+    infix fun <T> Observable<T>?.thenDoSafe(func: (T) -> Unit): Disposable? {
+        val d = this thenDo func
+        can(d)
+        return d
     }
+
+    infix fun <T : Any> Stream<T>?.thenDoSafe(func: ((T) -> Unit)): Disposable? {
+        val d = this thenDo func
+        can(d)
+        return d
+    }
+
+    fun <T> Observable<T>?.thenSafe(func: (T) -> Unit): Disposable? {
+        val d = this.then(func)
+        can(d)
+        return d
+    }
+
+    infix fun <T> Observable<T>.pipeToSafe(that: Subject<T>): Disposable? {
+        val d = this pipeTo that
+        can(d)
+        return d
+    }
+
+    infix fun <T : Any> Observable<T>.pipeToSafe(that: Stream<T>): Disposable? {
+        val d = this pipeTo that
+        can(d)
+        return d
+    }
+
+    infix fun <T : Any> Stream<T>.pipeToSafe(that: Stream<T>): Disposable? {
+        val d = this pipeTo that
+        can(d)
+        return d
+    }
+}
+
+interface AllInfixes : CloudInfix, InfixDisposableCan {
+
+//    infix fun Disposable?.can(that: DisposableCan) {
+//        that.can(this)
+//    }
 
 }
 
@@ -83,14 +119,14 @@ interface CloudInfix {
         }
     }
 
-    infix fun <T : Any, K : Any> Stream<T>.pipeTo(that: (T) -> Observable<K>): Observable<K> {
-        return this.open().map { that(it) }.switchOnNext()
-    }
-
     infix fun <T : Any> Stream<T>.pipeTo(that: Stream<T>): Disposable? {
         return this.open().subscribe {
             that.send(it)
         }
+    }
+
+    infix fun <T : Any, K : Any> Stream<T>.feedTo(that: (T) -> Observable<K>): Observable<K> {
+        return this.open().map { that(it) }.switchOnNext()
     }
 
 }

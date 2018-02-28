@@ -1,6 +1,7 @@
 package ena.min.lake.sample.list
 
 import ena.min.android.lake.AllInfixes
+import ena.min.android.lake.CloudInfix
 import ena.min.lake.sample.NetRequestContract
 import ena.min.lake.sample.NetResponseContract
 import ena.min.lake.sample.appNetworkLake
@@ -11,7 +12,7 @@ import org.json.JSONArray
  * Created by aminenami on 2/9/18.
  */
 
-class ListModel : ListModelContract, AllInfixes {
+class ListModel : ListModelContract, CloudInfix {
 
     override fun accessData(): Observable<ListResponse> {
 

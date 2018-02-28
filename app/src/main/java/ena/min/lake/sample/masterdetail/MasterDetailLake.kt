@@ -18,11 +18,11 @@ class MasterDetailLake private constructor() : CloudLake() {
         super.connect()
 
         createMasterList() sendTo STREAM_MASTER_LIST
-        STREAM_MASTER_ITEM_SELECTED pipeTo ::createDetailModel pipeTo STREAM_DETAILS can this
-        STREAM_RESET_LAKE thenDo {
+        STREAM_MASTER_ITEM_SELECTED feedTo ::createDetailModel pipeToSafe STREAM_DETAILS
+        STREAM_RESET_LAKE thenDoSafe {
             this.disconnect()
             instance = MasterDetailLake()
-        } can this
+        }
     }
 
     private fun createDetailModel(masterListModel: MasterListModel): Observable<DetailModel> {
@@ -59,12 +59,12 @@ class MasterLake : CloudLake() {
         val mdLake = MasterDetailLake.instance
 
         mdLake.STREAM_MASTER_LIST.memory?.let { it sendTo STREAM_SHOW_LIST }
-        mdLake.STREAM_MASTER_LIST pipeTo STREAM_SHOW_LIST can this
+        mdLake.STREAM_MASTER_LIST pipeToSafe STREAM_SHOW_LIST
 
         mdLake.STREAM_MASTER_ITEM_SELECTED.memory?.id?.let { it sendTo STREAM_SELECTED_ITEM_ID }
-        mdLake.STREAM_MASTER_ITEM_SELECTED pipeTo ::idOf pipeTo STREAM_SELECTED_ITEM_ID can this
+        mdLake.STREAM_MASTER_ITEM_SELECTED feedTo ::idOf pipeToSafe STREAM_SELECTED_ITEM_ID
 
-        STREAM_LIST_CLICKS pipeTo mdLake.STREAM_MASTER_ITEM_SELECTED can this
+        STREAM_LIST_CLICKS pipeToSafe mdLake.STREAM_MASTER_ITEM_SELECTED
     }
 
     private fun idOf(masterListModel: MasterListModel) = Observable.just(masterListModel.id)
@@ -80,6 +80,6 @@ class DetailLake : CloudLake() {
         val mdLake = MasterDetailLake.instance
         mdLake.STREAM_DETAILS.memory?.let { it.title sendTo STREAM_SHOW_TEXT }
         mdLake.STREAM_DETAILS.open()
-                .map { it.title } pipeTo STREAM_SHOW_TEXT can this
+                .map { it.title } pipeToSafe STREAM_SHOW_TEXT
     }
 }

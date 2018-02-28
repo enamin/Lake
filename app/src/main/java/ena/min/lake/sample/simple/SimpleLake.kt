@@ -19,10 +19,9 @@ class SimpleLake private constructor() : CloudLake() {
         super.connect()
 
         var time = 10
-        Observable.interval(1, TimeUnit.SECONDS)
-                .subscribe {
-                    onClockTick(time--)
-                } can this
+        Observable.interval(1, TimeUnit.SECONDS) thenDoSafe {
+            onClockTick(time--)
+        }
     }
 
     private fun onClockTick(time: Int) {

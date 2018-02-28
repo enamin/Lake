@@ -20,7 +20,7 @@ class NetworkLake(private val networkLayerContract: NetworkLayerContract) : Clou
         super.connect()
 
         val responder = networkLayerContract::respond
-        STREAM_REQUEST pipeTo responder pipeTo STREAM_RESPONSE
+        STREAM_REQUEST feedTo  responder pipeTo STREAM_RESPONSE
     }
 }
 

@@ -29,13 +29,13 @@ class MainLake(private val model: MainModelContract) : CloudLake() {
                 .distinctUntilChanged { i1, i2 -> i2.time() - i1.time() < 1000 }
                 .map { it.value() }
                 .delay(150, TimeUnit.MILLISECONDS)
-                .then {
+                .thenSafe {
                     it.destClazz sendTo STREAM_START_ACTIVITY
-                } can this
+                }
 
         STREAM_MAIN_PAGE_VISIBLE thenDo {
             Unit sendTo MasterDetailLake.instance.STREAM_RESET_LAKE
-        } can this
+        }
     }
 
 }

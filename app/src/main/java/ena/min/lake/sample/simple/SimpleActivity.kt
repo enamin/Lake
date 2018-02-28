@@ -18,11 +18,11 @@ class SimpleActivity : AppCompatActivity(), DisposableCan, AllInfixes {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple)
 
-        lake.STREAM_UPDATE_TIMER_TEXT thenDo  {
+        lake.STREAM_UPDATE_TIMER_TEXT thenDoSafe  {
             tvSimpleTime.text = it
-        } can this
+        }
 
-        lake.STREAM_FINISH thenDo  { finish() } can this
+        lake.STREAM_FINISH thenDoSafe  { finish() }
 
         if (!lake.isConnected) {
             lake.connect()

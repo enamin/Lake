@@ -23,11 +23,11 @@ class ListLake(private val model: ListModelContract) : CloudLake() {
     override fun connect() {
         super.connect()
 
-        STREAM_CLICKS.open().filter { !isBusy } thenDo {
+        STREAM_CLICKS.open().filter { !isBusy } thenDoSafe {
             isBusy = true
             requestData()
             updateUiElements(listOf(ListUiElements.LOADING))
-        } can this
+        }
 
     }
 
@@ -40,7 +40,7 @@ class ListLake(private val model: ListModelContract) : CloudLake() {
 
         clearCan(requestDisposable)
 
-        requestDisposable = model.accessData() thenDo {
+        requestDisposable = model.accessData() thenDoSafe {
             isBusy = false
             if (it.error) {
                 "Connection Problem!" sendTo STREAM_ERROR
@@ -54,8 +54,6 @@ class ListLake(private val model: ListModelContract) : CloudLake() {
                 sendIntervalOutput(it.list)
             }
         }
-
-        requestDisposable can this
     }
 
     private fun sendIntervalOutput(list: Iterable<ListResponse.Item>) {

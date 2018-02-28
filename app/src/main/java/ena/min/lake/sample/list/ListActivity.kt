@@ -49,20 +49,20 @@ class ListActivity : AppCompatActivity(), AllInfixes, DisposableCan {
 
         btnRequest.setOnClickListener { Unit sendTo lake.STREAM_CLICKS }
 
-        lake.STREAM_UPDATE_UI.open().observeOn(appUiThread) thenDo {
+        lake.STREAM_UPDATE_UI.open().observeOn(appUiThread) thenDoSafe {
             btnRequest.visibility = if (it.contains(ListUiElements.BUTTON)) View.VISIBLE else View.GONE
             pbRequest.visibility = if (it.contains(ListUiElements.LOADING)) View.VISIBLE else View.GONE
             rvList.visibility = if (it.contains(ListUiElements.LIST)) View.VISIBLE else View.GONE
-        } can this
+        }
 
-        lake.STREAM_ERROR.open().observeOn(appUiThread) thenDo {
+        lake.STREAM_ERROR.open().observeOn(appUiThread) thenDoSafe {
             Toast.makeText(this, it, Toast.LENGTH_LONG).show()
-        } can this
+        }
 
-        lake.STREAM_SHOW_ITEM.open().observeOn(appUiThread) thenDo {
+        lake.STREAM_SHOW_ITEM.open().observeOn(appUiThread) thenDoSafe {
             items.add(it)
             adapter.notifyItemInserted(items.size - 1)
-        } can this
+        }
 
         lake.connect()
     }

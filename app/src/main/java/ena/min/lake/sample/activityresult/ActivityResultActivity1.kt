@@ -19,11 +19,11 @@ class ActivityResultActivity1 : AppCompatActivity(), DisposableCan, AllInfixes {
 
         setContentView(R.layout.activity_result1)
 
-        lake.STREAM_START_AN_ACTIVITY thenDo { startAnActivity(it) } can this
+        lake.STREAM_START_AN_ACTIVITY thenDoSafe  { startAnActivity(it) }
 
         //This is the part we get the result from the next Activity
         updateText(lake.STREAM_UPDATE_TEXT.memory)
-        lake.STREAM_UPDATE_TEXT thenDo { updateText(it) } can this
+        lake.STREAM_UPDATE_TEXT thenDoSafe  { updateText(it) }
 
         btnStartNextActivity.setOnClickListener {
             Unit sendTo lake.STREAM_BUTTON_CLICKS

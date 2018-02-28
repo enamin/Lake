@@ -19,8 +19,8 @@ class ActivityResultActivity2 : AppCompatActivity(), DisposableCan, AllInfixes {
         setContentView(R.layout.activity_result2)
 
 
-        lake.STREAM_SET_BIG_TEXT thenDo { tvNameAndAge.text = it } can this
-        lake.STREAM_FINISH thenDo { finish() } can this
+        lake.STREAM_SET_BIG_TEXT thenDoSafe { tvNameAndAge.text = it }
+        lake.STREAM_FINISH thenDoSafe { finish() }
         lake.connect()
     }
 
@@ -54,7 +54,7 @@ class ActivityResult2Lake : CloudLake() {
         val report = "Hi, I'm ${resultItem.name}. I'm ${resultItem.age}"
         report sendTo STREAM_SET_BIG_TEXT
 
-        Observable.just(Unit).delay(2, TimeUnit.SECONDS) thenDo {
+        Observable.just(Unit).delay(2, TimeUnit.SECONDS) thenDoSafe {
             sendResult(resultItem)
             Unit sendTo STREAM_FINISH
         }
