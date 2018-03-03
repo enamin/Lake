@@ -9,11 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.aminenami.jenkinstest.R
 import ena.min.android.lake.AllInfixes
-import ena.min.android.lake.DisposableCan
+import ena.min.android.lake.Bin
 import io.reactivex.disposables.Disposable
 import java.util.*
 
-class MasterDetailActivity : AppCompatActivity(), DisposableCan, AllInfixes {
+class MasterDetailActivity : AppCompatActivity(), Bin, AllInfixes {
     override val disposables = ArrayList<Disposable?>()
 
     private val lake = MasterDetailLake.instance
@@ -33,7 +33,7 @@ class MasterDetailActivity : AppCompatActivity(), DisposableCan, AllInfixes {
             transaction.commit()
 
             lake.STREAM_DETAILS.memory?.let { showDetails() }
-            lake.STREAM_DETAILS thenDoSafe { showDetails() }
+            lake.STREAM_DETAILS thenDo { showDetails() }
         }
 
 
@@ -69,13 +69,13 @@ class MasterDetailActivity : AppCompatActivity(), DisposableCan, AllInfixes {
     }
 
     override fun onDestroy() {
-        clearCan()
+        clearBin()
         super.onDestroy()
     }
 }
 
 
-abstract class MasterDetailFrag(private val resId: Int) : Fragment(), DisposableCan, AllInfixes {
+abstract class MasterDetailFrag(private val resId: Int) : Fragment(), Bin, AllInfixes {
     override val disposables = ArrayList<Disposable?>()
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(resId, container, false)

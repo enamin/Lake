@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.example.aminenami.jenkinstest.R
 import ena.min.android.lake.AllInfixes
-import ena.min.android.lake.DisposableCan
+import ena.min.android.lake.Bin
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_result1.*
 
-class ActivityResultActivity1 : AppCompatActivity(), DisposableCan, AllInfixes {
+class ActivityResultActivity1 : AppCompatActivity(), Bin, AllInfixes {
     override val disposables = ArrayList<Disposable?>()
 
     val lake = ActivityResult1Lake()
@@ -19,11 +19,11 @@ class ActivityResultActivity1 : AppCompatActivity(), DisposableCan, AllInfixes {
 
         setContentView(R.layout.activity_result1)
 
-        lake.STREAM_START_AN_ACTIVITY thenDoSafe  { startAnActivity(it) }
+        lake.STREAM_START_AN_ACTIVITY thenDo { startAnActivity(it) }
 
         //This is the part we get the result from the next Activity
         updateText(lake.STREAM_UPDATE_TEXT.memory)
-        lake.STREAM_UPDATE_TEXT thenDoSafe  { updateText(it) }
+        lake.STREAM_UPDATE_TEXT thenDo { updateText(it) }
 
         btnStartNextActivity.setOnClickListener {
             Unit sendTo lake.STREAM_BUTTON_CLICKS
@@ -43,7 +43,7 @@ class ActivityResultActivity1 : AppCompatActivity(), DisposableCan, AllInfixes {
 
     override fun onDestroy() {
         lake.disconnect()
-        clearCan()
+        clearBin()
         super.onDestroy()
     }
 

@@ -11,14 +11,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.example.aminenami.jenkinstest.R
 import ena.min.android.lake.AllInfixes
-import ena.min.android.lake.DisposableCan
+import ena.min.android.lake.Bin
 import ena.min.lake.sample.MainAdapter
 import ena.min.lake.util.appUiThread
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.android.synthetic.main.row_list.view.*
 
-class ListActivity : AppCompatActivity(), AllInfixes, DisposableCan {
+class ListActivity : AppCompatActivity(), AllInfixes, Bin {
 
     override val disposables = ArrayList<Disposable?>()
     private val lake = ListLake(ListModel())
@@ -49,17 +49,17 @@ class ListActivity : AppCompatActivity(), AllInfixes, DisposableCan {
 
         btnRequest.setOnClickListener { Unit sendTo lake.STREAM_CLICKS }
 
-        lake.STREAM_UPDATE_UI.open().observeOn(appUiThread) thenDoSafe {
+        lake.STREAM_UPDATE_UI.open().observeOn(appUiThread) thenDo {
             btnRequest.visibility = if (it.contains(ListUiElements.BUTTON)) View.VISIBLE else View.GONE
             pbRequest.visibility = if (it.contains(ListUiElements.LOADING)) View.VISIBLE else View.GONE
             rvList.visibility = if (it.contains(ListUiElements.LIST)) View.VISIBLE else View.GONE
         }
 
-        lake.STREAM_ERROR.open().observeOn(appUiThread) thenDoSafe {
+        lake.STREAM_ERROR.open().observeOn(appUiThread) thenDo {
             Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
 
-        lake.STREAM_SHOW_ITEM.open().observeOn(appUiThread) thenDoSafe {
+        lake.STREAM_SHOW_ITEM.open().observeOn(appUiThread) thenDo {
             items.add(it)
             adapter.notifyItemInserted(items.size - 1)
         }
@@ -68,7 +68,7 @@ class ListActivity : AppCompatActivity(), AllInfixes, DisposableCan {
     }
 
     override fun onDestroy() {
-        clearCan()
+        clearBin()
         lake.disconnect()
         super.onDestroy()
     }

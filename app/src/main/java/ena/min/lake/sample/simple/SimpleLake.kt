@@ -1,8 +1,6 @@
 package ena.min.lake.sample.simple
 
-import ena.min.android.lake.Cloud
 import ena.min.android.lake.CloudLake
-import ena.min.android.lake.Stream
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -19,7 +17,7 @@ class SimpleLake private constructor() : CloudLake() {
         super.connect()
 
         var time = 10
-        Observable.interval(1, TimeUnit.SECONDS) thenDoSafe {
+        Observable.interval(1, TimeUnit.SECONDS) thenDo {
             onClockTick(time--)
         }
     }

@@ -1,7 +1,6 @@
 package ena.min.lake.sample
 
 import ena.min.android.lake.CloudLake
-import ena.min.android.lake.Stream
 import io.reactivex.Observable
 import org.json.JSONObject
 

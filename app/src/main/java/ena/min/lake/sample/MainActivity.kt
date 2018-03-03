@@ -11,8 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.aminenami.jenkinstest.R
 import ena.min.android.lake.AllInfixes
-import ena.min.android.lake.DisposableCan
-import ena.min.android.lake.Stream
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
@@ -31,15 +29,15 @@ class MainActivity : AppCompatActivity(), AllInfixes {
 
         rvMain?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
-        mainLake.STREAM_START_ACTIVITY thenDoSafe  {
+        mainLake.STREAM_START_ACTIVITY thenDo {
             startActivity(Intent(this, it))
         }
 
-        mainLake.STREAM_SHOW_LIST thenDo {
+        mainLake.STREAM_SHOW_LIST unsafeThenDo {
             val items = it
             val adapter = MainAdapter(this, items)
             rvMain?.adapter = adapter
-            adapter.itemClicks pipeTo mainLake.STREAM_LIST_CLICKS
+            adapter.itemClicks unsafePipeTo mainLake.STREAM_LIST_CLICKS
         }
 
         mainLake.connect()
@@ -53,7 +51,7 @@ class MainActivity : AppCompatActivity(), AllInfixes {
 
     override fun onDestroy() {
         //Unsubscribe from all streams to prevent any leaks!
-        clearCan()
+        clearBin()
         mainLake.disconnect()
 
         //(Optional) Just tell everyone (e.g. Services) that the main activity is destroyed:

@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.example.aminenami.jenkinstest.R
 import ena.min.android.lake.AllInfixes
-import ena.min.android.lake.DisposableCan
+import ena.min.android.lake.Bin
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_simple.*
 import java.util.*
 
-class SimpleActivity : AppCompatActivity(), DisposableCan, AllInfixes {
+class SimpleActivity : AppCompatActivity(), Bin, AllInfixes {
     override val disposables = ArrayList<Disposable?>()
 
     val lake = SimpleLake.instance
@@ -18,11 +18,11 @@ class SimpleActivity : AppCompatActivity(), DisposableCan, AllInfixes {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple)
 
-        lake.STREAM_UPDATE_TIMER_TEXT thenDoSafe  {
+        lake.STREAM_UPDATE_TIMER_TEXT thenDo {
             tvSimpleTime.text = it
         }
 
-        lake.STREAM_FINISH thenDoSafe  { finish() }
+        lake.STREAM_FINISH thenDo { finish() }
 
         if (!lake.isConnected) {
             lake.connect()
@@ -30,7 +30,7 @@ class SimpleActivity : AppCompatActivity(), DisposableCan, AllInfixes {
     }
 
     override fun onDestroy() {
-        clearCan()
+        clearBin()
         super.onDestroy()
     }
 

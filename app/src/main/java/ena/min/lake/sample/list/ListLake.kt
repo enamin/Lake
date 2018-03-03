@@ -1,7 +1,6 @@
 package ena.min.lake.sample.list
 
 import ena.min.android.lake.CloudLake
-import ena.min.android.lake.Stream
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import java.util.*
@@ -23,7 +22,7 @@ class ListLake(private val model: ListModelContract) : CloudLake() {
     override fun connect() {
         super.connect()
 
-        STREAM_CLICKS.open().filter { !isBusy } thenDoSafe {
+        STREAM_CLICKS.open().filter { !isBusy } thenDo {
             isBusy = true
             requestData()
             updateUiElements(listOf(ListUiElements.LOADING))
@@ -38,9 +37,9 @@ class ListLake(private val model: ListModelContract) : CloudLake() {
 
     private fun requestData() {
 
-        clearCan(requestDisposable)
+        clearBin(requestDisposable)
 
-        requestDisposable = model.accessData() thenDoSafe {
+        requestDisposable = model.accessData() thenDo {
             isBusy = false
             if (it.error) {
                 "Connection Problem!" sendTo STREAM_ERROR
@@ -60,7 +59,7 @@ class ListLake(private val model: ListModelContract) : CloudLake() {
         Observable.interval(300, TimeUnit.MILLISECONDS)
                 .zipWith(list) { _, item ->
                     ListViewModel(item.title, item.body)
-                } pipeTo STREAM_SHOW_ITEM
+                } unsafePipeTo STREAM_SHOW_ITEM
     }
 }
 

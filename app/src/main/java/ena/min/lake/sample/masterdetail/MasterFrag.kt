@@ -26,12 +26,12 @@ class MasterFrag : MasterDetailFrag(R.layout.frag_master) {
         rvMasterList.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.VERTICAL, false)
         rvMasterList.adapter = adapter
 
-        lake.STREAM_SHOW_LIST thenDoSafe {
+        lake.STREAM_SHOW_LIST thenDo {
             adapter.items = it
             adapter.notifyDataSetChanged()
         }
 
-        lake.STREAM_SELECTED_ITEM_ID thenDoSafe { adapter.notifyDataSetChanged() }
+        lake.STREAM_SELECTED_ITEM_ID thenDo { adapter.notifyDataSetChanged() }
 
         lake.connect()
     }
@@ -42,7 +42,7 @@ class MasterFrag : MasterDetailFrag(R.layout.frag_master) {
 
     override fun onDetach() {
         lake.disconnect()
-        clearCan()
+        clearBin()
         super.onDetach()
     }
 

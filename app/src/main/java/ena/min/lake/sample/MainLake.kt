@@ -22,18 +22,18 @@ class MainLake(private val model: MainModelContract) : CloudLake() {
     override fun connect() {
         super.connect()
 
-        model.accessData() pipeTo STREAM_SHOW_LIST
+        model.accessData() unsafePipeTo STREAM_SHOW_LIST
 
         STREAM_LIST_CLICKS.open()
                 .timestamp()
                 .distinctUntilChanged { i1, i2 -> i2.time() - i1.time() < 1000 }
                 .map { it.value() }
                 .delay(150, TimeUnit.MILLISECONDS)
-                .thenSafe {
+                .then {
                     it.destClazz sendTo STREAM_START_ACTIVITY
                 }
 
-        STREAM_MAIN_PAGE_VISIBLE thenDo {
+        STREAM_MAIN_PAGE_VISIBLE unsafeThenDo {
             Unit sendTo MasterDetailLake.instance.STREAM_RESET_LAKE
         }
     }

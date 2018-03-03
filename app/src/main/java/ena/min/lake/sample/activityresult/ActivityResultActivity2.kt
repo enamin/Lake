@@ -11,7 +11,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
-class ActivityResultActivity2 : AppCompatActivity(), DisposableCan, AllInfixes {
+class ActivityResultActivity2 : AppCompatActivity(), Bin, AllInfixes {
     override val disposables = ArrayList<Disposable?>()
     val lake = ActivityResult2Lake()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,13 +19,13 @@ class ActivityResultActivity2 : AppCompatActivity(), DisposableCan, AllInfixes {
         setContentView(R.layout.activity_result2)
 
 
-        lake.STREAM_SET_BIG_TEXT thenDoSafe { tvNameAndAge.text = it }
-        lake.STREAM_FINISH thenDoSafe { finish() }
+        lake.STREAM_SET_BIG_TEXT thenDo { tvNameAndAge.text = it }
+        lake.STREAM_FINISH thenDo { finish() }
         lake.connect()
     }
 
     override fun onDestroy() {
-        clearCan()
+        clearBin()
         lake.disconnect()
         super.onDestroy()
     }
@@ -54,7 +54,7 @@ class ActivityResult2Lake : CloudLake() {
         val report = "Hi, I'm ${resultItem.name}. I'm ${resultItem.age}"
         report sendTo STREAM_SET_BIG_TEXT
 
-        Observable.just(Unit).delay(2, TimeUnit.SECONDS) thenDoSafe {
+        Observable.just(Unit).delay(2, TimeUnit.SECONDS) thenDo {
             sendResult(resultItem)
             Unit sendTo STREAM_FINISH
         }

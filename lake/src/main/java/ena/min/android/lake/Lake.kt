@@ -23,7 +23,7 @@ open class Lake {
 
 }
 
-open class CloudLake : Lake(), CloudOwner, DisposableCan, AllInfixes {
+open class CloudLake : Lake(), CloudOwner, AllInfixes {
     override val cloud = Cloud()
     override val disposables = ArrayList<Disposable?>()
 
@@ -31,7 +31,7 @@ open class CloudLake : Lake(), CloudOwner, DisposableCan, AllInfixes {
 
     override fun disconnect() {
         super.disconnect()
-        clearCan()
+        clearBin()
 //        cloud.completeAll()
     }
 }
